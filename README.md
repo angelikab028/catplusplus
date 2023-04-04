@@ -1,5 +1,11 @@
 # Cat++
 
+Language: Cat++
+
+Extension: `.meow`
+
+Name for compiler: CATNIP
+
 | Language Feature | Code Example |
 | :---------------- | ------------ |
 | Integer Scalar Variables | 
