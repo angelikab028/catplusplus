@@ -19,7 +19,7 @@ Features of Cat++
 | If-then-else Statements | `if(y < 3) {` <br> &emsp; `y = y + 1 :3` <br>`}` <br> `else if(y > 3) {` <br> &emsp; `y = y - 1 :3` <br> `}` <br> `else {` <br> &emsp; `x = x + 1 :3` <br> `}`
 | Read and Write Statements | Print to terminal: <br> `scratch(x) :3` <br> `scratch(x + 2) :3` <br> Read from terminal: <br> `litter(x) :3` 
 | Comments | `O_O this is a comment` <br> `meow x = 2 :3 O_O this will be ignored`
-| Functions | `purr meow add(meow x, meow y) {` <br> &emsp; `meow z = x + z :3` <br> &emsp; `return z :3` <br> `}` <br> `meow a = add(x, y) :3`
+| Functions | `purr meow add(meow x, meow y) {` <br> &emsp; `meow z = x + z :3` <br> &emsp; `return z :3` <br> `}` <br> `purr meow main() {`<br> &emsp; `meow a = add(x, y) :3` <br> `}`
 
 | Symbol in Language | Token Name |
 | :----------------- | ---------- |
