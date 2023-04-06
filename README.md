@@ -58,3 +58,4 @@ Features of Cat++
 | `>` | GREATERTHAN |
 | `<=` | LESSOREQUAL |
 | `>=` | GREATOREQUAL |
+| `hairball` | VOID |
