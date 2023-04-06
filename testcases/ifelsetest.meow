@@ -1,0 +1,16 @@
+purr hairball main() {
+    meow mƐ:
+    meow nƐ:
+    meow oƐ:
+
+    litter(n)Ɛ:
+    purrhaps (n >= 100) {
+        scratch(n)Ɛ:
+    }
+    else {
+        m = n - 1Ɛ:
+        scratch(m)Ɛ:
+    }
+
+    scratch(o)Ɛ:
+}
