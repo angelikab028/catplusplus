@@ -1,0 +1,14 @@
+O_O This is a simple loop with a break statement
+
+purr hairball main() {
+    meow iƐ:
+
+    i = 0Ɛ:
+    hunt (i <= 10) {
+        scratch(i)Ɛ:
+        purrhaps (i > 3) {
+            neuterƐ:
+        }
+        i = i + 1Ɛ:
+    }
+}
