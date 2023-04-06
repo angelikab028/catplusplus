@@ -49,7 +49,9 @@ Features of Cat++
 | `)` | RIGHT_PARENTHESIS |
 | `[` | LEFT_SQUARE_BRACKET |
 | `]` | RIGHT_SQUARE_BRACKET |
-| idenifier | IDENTIFIER identifier |
+| `{` | LEFT_CURLY |
+| `}` | RIGHT_CURLY |
+| identifier | IDENTIFIER identifier |
 | number | NUMBER number |
 | `==` | EQUALS |
 | `<` | LESSTHAN |
