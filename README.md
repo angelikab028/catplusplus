@@ -37,9 +37,22 @@ Features of Cat++
 | `litter` | READ |
 | `knead` | RETURN |
 | `hunt` | WHILE |
-|
-|
-|
-|
-|
-|
+| `=` | ASSIGN |
+| `-` | SUB |
+| `+` | ADD |
+| `*` | MULT |
+| `/` | DIV |
+| `%` | MOD |
+| `else` | ELSE |
+| `,` | COMMA |
+| `(` | LEFT_PARENTHESIS |
+| `)` | RIGHT_PARENTHESIS |
+| `[` | LEFT_SQUARE_BRACKET |
+| `]` | RIGHT_SQUARE_BRACKET |
+| idenifier | IDENTIFIER identifier |
+| number | NUMBER number |
+| `==` | EQUALS |
+| `<` | LESSTHAN |
+| `>` | GREATERTHAN |
+| `<=` | LESSOREQUAL |
+| `>=` | GREATOREQUAL |
