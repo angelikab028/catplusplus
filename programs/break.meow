@@ -1,14 +1,14 @@
 O_O This is a simple loop with a break statement
 
 purr hairball main() {
-    meow iƐ:
+    meow i :3
 
-    i = 0Ɛ:
+    i = 0 :3
     hunt (i <= 10) {
-        scratch(i)Ɛ:
+        scratch(i) :3
         purrhaps (i > 3) {
-            neuterƐ:
+            neuter :3
         }
-        i = i + 1Ɛ:
+        i = i + 1 :3
     }
 }

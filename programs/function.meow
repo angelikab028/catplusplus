@@ -1,22 +1,22 @@
 purr meow add(meow a, meow b) {
-    knead a + bƐ:
+    knead a + b :3
 }
 
 purr meow mult(meow a, meow b) {
-    knead a * bƐ:
+    knead a * b :3
 }
 
 purr hairball main() {
-    meow aƐ:
-    meow bƐ:
-    meow cƐ:
-    meow dƐ:
+    meow a :3
+    meow b :3
+    meow c :3
+    meow d :3
 
-    a = 100Ɛ:
-    b = 50Ɛ:
-    c = add(a, b)Ɛ:
-    scratch(c)Ɛ: O_O should print 150
+    a = 100 :3
+    b = 50 :3
+    c = add(a, b) :3
+    scratch(c) :3 O_O should print 150
 
-    d = mult(c, a + b)Ɛ:
-    scratch(d)Ɛ: O_O should print "22500", since 22500 = 150 * 150
+    d = mult(c, a + b) :3
+    scratch(d) :3 O_O should print "22500", since 22500 = 150 * 150
 }
