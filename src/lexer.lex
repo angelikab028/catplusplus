@@ -48,11 +48,15 @@ NUMBER [+-]?[0-9]+
 
 
 %%
+{NEWLINE} {
+        columnNumber = 0;
+        lineNumber++;
+}
 
-.             { 
-                printf("UNRECOGNIZED TOKEN %s AT LINE %d, COLUMN %d\n", yytext, lineNumber, columnNumber); 
-                return; 
-              }
+.+ { 
+        printf("UNRECOGNIZED TOKEN %s AT LINE %d, COLUMN %d\n", yytext, lineNumber, columnNumber); 
+        //return; 
+}
 %%
 
 int main(int argc, char* argv[]) {
