@@ -15,7 +15,7 @@ Features of Cat++
 | Assignment Statements | `meow x = 1 :3` <br> `x = 2 :3`
 | Arithmetic Operators | `meow x = 1 + 1 :3` <br> `x = x + 1 :3` <br> `meow y = x - 1 :3` <br> `y = x * y :3` <br> `meow z = y / 2 :3` <br> `z = 1 + x - y * z / 4 :3` 
 | Relational Operators | `x != y :3` <br> `x < y :3` <br> `x > y :3` <br> `x <= y :3` <br> `x >= y :3` <br> `x == y :3`
-| While Loop | Traditional: <br> `hunt(x < 10) {`<br> &emsp; `x = x + 1 :3` <br> `}` <br> With break statement: <br> `hunt(x > 10) {` <br> &emsp; `purrhaps(x == 10000) {` <br> &emsp; &emsp; `neuter :3` <br> &emsp; `}` <br> `}` <br> With continue statement:  <br>`hunt(x > 10) {` <br> &emsp; `purrhaps(x == 10000) {` <br> &emsp; &emsp; `keep going :3` <br>&emsp;`}` <br> `}`
+| While Loop | Traditional: <br> `hunt(x < 10) {`<br> &emsp; `x = x + 1 :3` <br> `}` <br> With break statement: <br> `hunt(x > 10) {` <br> &emsp; `purrhaps(x == 10000) {` <br> &emsp; &emsp; `neuter :3` <br> &emsp; `}` <br> `}` <br> With continue statement:  <br>`hunt(x > 10) {` <br> &emsp; `purrhaps(x == 10000) {` <br> &emsp; &emsp; `keep_going :3` <br>&emsp;`}` <br> `}`
 | If-then-else Statements | `purrhaps(y < 3) {` <br> &emsp; `y = y + 1 :3` <br>`}` <br> `else purrhaps(y > 3) {` <br> &emsp; `y = y - 1 :3` <br> `}` <br> `else {` <br> &emsp; `x = x + 1 :3` <br> `}`
 | Read and Write Statements | Print to terminal: <br> `scratch(x) :3` <br> `scratch(x + 2) :3` <br> Read from terminal: <br> `litter(x) :3` 
 | Comments | `O_O this is a comment` <br> `meow x = 2 :3 O_O this will be ignored`
@@ -27,7 +27,7 @@ Features of Cat++
 | `meow` | INTEGER |
 | `:3` | SEMICOLON |
 | `neuter` | BREAK |
-| `keep going` | CONTINUE |
+| `keep_going` | CONTINUE |
 | `purrhaps` | IF |
 | `fur` | FOR |
 | `furreal` | TRUE |
