@@ -44,10 +44,15 @@ LESSOREQUAL "<="
 GREATOREQUAL ">="
 VOID "hairball"
 IDENTIFIER [a-zA-z]([a-zA-z]|[0-9])*
-NUMBER [+-]?[0-9]+
+NUMBER [\+-]?[0-9]+
 
 
 %%
+{COMMENT} {
+        printf("TOKEN COMMENT: %s", yytext);
+        columnNumber += yyleng;
+}
+
 {NEWLINE} {
         columnNumber = 0;
         lineNumber++;
