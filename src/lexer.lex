@@ -16,10 +16,41 @@ RIGHT_PARENTHESIS ")"
 ASSIGN "="
 NEWLINE "\n"
 WHITESPACE [ \t]
+FUNCTION "purr"
+INTEGER "meow"
+SEMICOLON ":3"
+BREAK "neuter"
+CONTINUE "keep_going"
+IF "purrhaps"
+FOR "fur"
+TRUE "furreal"
+FALSE "hiss"
+COMMENT "O_O"([ \t]?.)*
+PRINT "scratch"
+READ "litter"
+RETURN "knead"
+WHILE "hunt"
+MOD "%"
+ELSE "else"
+COMMA ","
+LEFT_SQUARE_BRACKET "["
+RIGHT_SQUARE_BRACKET "]"
+LEFT_CURLY "{"
+RIGHT_CURLY "}"
+EQUALS "=="
+LESSTHAN "<"
+GREATERTHAN ">"
+LESSOREQUAL "<="
+GREATOREQUAL ">="
+VOID "hairball"
+IDENTIFIER [a-zA-z]([a-zA-z]|[0-9])*
+NUMBER [+-]?[0-9]+
 
-%%  
+
+%%
+
 .             { 
-                printf("UNRECOGNIZED TOKEN %s AT LINE %d\n", yytext, lineNumber++); 
+                printf("UNRECOGNIZED TOKEN %s AT LINE %d, COLUMN %d\n", yytext, lineNumber, columnNumber); 
                 return; 
               }
 %%
