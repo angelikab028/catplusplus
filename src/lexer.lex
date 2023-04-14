@@ -48,8 +48,33 @@ NUMBER [\+-]?[0-9]+
 
 
 %%
+
+{FUNCTION} {
+        printf("TOKEN FUNCTION: %s\n", yytext);
+        columnNumber += yyleng;
+}
+
+{INTEGER} {
+        printf("TOKEN INTEGER: %s\n", yytext);
+        columnNumber += yyleng;
+}
+
+{SEMICOLON} {
+        printf("TOKEN SEMICOLON: %s\n", yytext);
+        columnNumber += yyleng;
+}
+
+{IDENTIFIER} {
+        printf("TOKEN IDENTIFIER: %s\n", yytext);
+        columnNumber += yyleng;
+}
+
 {COMMENT} {
-        printf("TOKEN COMMENT: %s", yytext);
+        printf("TOKEN COMMENT: %s\n", yytext);
+        columnNumber += yyleng;
+}
+
+{WHITESPACE} {
         columnNumber += yyleng;
 }
 
@@ -58,8 +83,8 @@ NUMBER [\+-]?[0-9]+
         lineNumber++;
 }
 
-.+ { 
-        printf("UNRECOGNIZED TOKEN %s AT LINE %d, COLUMN %d\n", yytext, lineNumber, columnNumber); 
+. { 
+        printf("UNRECOGNIZED TOKEN AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext); 
         //return; 
 }
 %%
