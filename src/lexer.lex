@@ -44,12 +44,14 @@ LESSOREQUAL "<="
 GREATOREQUAL ">="
 VOID "hairball"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
+INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 %%
 
-[+-]?{DIGIT}+ {
+[+-]?{DIGIT}+/({WHITESPACE}|{NEWLINE}) {
         printf("TOKEN INTEGER: %s\n", yytext);
         columnNumber += yyleng;
+        yyless(yyleng);
 }
 
 {FUNCTION} {
@@ -222,6 +224,11 @@ IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
         columnNumber += yyleng;
 }
 
+{INVALIDIDENTIFIER} {
+        printf("INVALID IDENTIFIER ERROR AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext);
+        return;
+}
+
 {COMMENT} {
         printf("TOKEN COMMENT: %s\n", yytext);
         columnNumber += yyleng;
@@ -237,8 +244,8 @@ IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
 }
 
 . { 
-        printf("UNRECOGNIZED SYMBOL AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext); 
-        //return; 
+        printf("UNRECOGNIZED SYMBOL ERROR AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext);
+        return; 
 }
 %%
 
