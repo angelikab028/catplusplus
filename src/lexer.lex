@@ -15,7 +15,7 @@ LEFT_PARENTHESIS "("
 RIGHT_PARENTHESIS ")"
 ASSIGN "="
 NEWLINE "\n"
-WHITESPACE [ \t]
+WHITESPACE [ \t]+
 FUNCTION "purr"
 INTEGER "meow"
 SEMICOLON ":3"
@@ -239,7 +239,7 @@ NUMBER [\+-]?[0-9]+
 }
 
 . { 
-        printf("UNRECOGNIZED TOKEN AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext); 
+        printf("UNRECOGNIZED SYMBOL AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext); 
         //return; 
 }
 %%
