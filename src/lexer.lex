@@ -48,8 +48,8 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 %%
 
-[+-]?{DIGIT}+/({WHITESPACE}|{NEWLINE}) {
-        printf("TOKEN INTEGER: %s\n", yytext);
+[+-]?{DIGIT}+ {
+        printf("TOKEN NUMBER: %s\n", yytext);
         columnNumber += yyleng;
         yyless(yyleng);
 }
