@@ -43,7 +43,7 @@ GREATERTHAN ">"
 LESSOREQUAL "<="
 GREATOREQUAL ">="
 VOID "hairball"
-IDENTIFIER [a-zA-z]([a-zA-z]|[0-9])*
+IDENTIFIER [a-zA-Z]([a-zA-Z]|[0-9])*
 NUMBER [\+-]?[0-9]+
 
 
