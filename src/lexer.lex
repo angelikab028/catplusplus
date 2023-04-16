@@ -44,12 +44,10 @@ LESSOREQUAL "<="
 GREATOREQUAL ">="
 VOID "hairball"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
-NUMBER [\+-]?[0-9]+
-
 
 %%
 
-{DIGIT}+ {
+[+-]?{DIGIT}+ {
         printf("TOKEN INTEGER: %s\n", yytext);
         columnNumber += yyleng;
 }
