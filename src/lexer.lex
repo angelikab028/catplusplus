@@ -225,7 +225,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 }
 
 {INVALIDIDENTIFIER} {
-        printf("INVALID IDENTIFIER ERROR AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext);
+        printf("INVALID IDENTIFIER ERROR (CANNOT BEGIN WITH NUMBER) AT LINE %d, COLUMN %d: %s\n", lineNumber, columnNumber, yytext);
         return;
 }
 
