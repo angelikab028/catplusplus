@@ -1,0 +1,9 @@
+purr hairball test() {
+    meow n :3
+
+    litter(n) :3
+    n = n + 1?
+    scratch(n) :3
+
+}
+
