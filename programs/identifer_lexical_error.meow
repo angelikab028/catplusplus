@@ -1,0 +1,7 @@
+purr hairball test(){
+	meow 2n;
+}
+
+purr hairball test2(){
+	meow n_;
+}
