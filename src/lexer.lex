@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+// #include "y.tab.h"
 // #define YY_USER_ACTION ++ctr[yy_act];
 // int ctr[YY_NUM_RULES];
 int lineNumber = 1; 
@@ -52,31 +53,37 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         printf("TOKEN NUMBER: %s\n", yytext);
         columnNumber += yyleng;
         yyless(yyleng);
+        // return NUMBER;
 }
 
 {FUNCTION} {
         printf("TOKEN FUNCTION: %s\n", yytext);
         columnNumber += yyleng;
+        // return FUNCTION;
 }
 
 {INTEGER} {
         printf("TOKEN INTEGER: %s\n", yytext);
         columnNumber += yyleng;
+        // return INTEGER;
 }
 
 {SEMICOLON} {
         printf("TOKEN SEMICOLON: %s\n", yytext);
         columnNumber += yyleng;
+        // return SEMICOLON;
 }
 
 {BREAK} {
         printf("TOKEN BREAK: %s\n", yytext);
         columnNumber += yyleng;
+        // return BREAK;
 }
 
 {CONTINUE} {
         printf("TOKEN CONTINUE: %s\n", yytext);
         columnNumber += yyleng;
+        // return CONTINUE;
 }
 
 {IF} {
@@ -248,7 +255,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         return; 
 }
 %%
-
+// Remove main, move to Bison
 int main(int argc, char* argv[]) {
     ++argv;
     --argc;
