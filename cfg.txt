@@ -1,0 +1,3 @@
+program_start -> epsilon | functions
+functions -> function | function functions
+function -> FUNCTION INT IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY
