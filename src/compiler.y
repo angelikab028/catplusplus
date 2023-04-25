@@ -1,7 +1,7 @@
 %{
 
 %}
-%token NUMBER FUNCTION
+%token NUMBER FUNCTION INTEGER
 %start prog_start
 
 %%
