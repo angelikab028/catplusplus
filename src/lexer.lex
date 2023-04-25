@@ -1,8 +1,6 @@
 %{
 #include <stdio.h>
-// #include "y.tab.h"
-// #define YY_USER_ACTION ++ctr[yy_act];
-// int ctr[YY_NUM_RULES];
+#include "y.tab.h"
 int lineNumber = 1; 
 int columnNumber = 0;
 %}
@@ -50,185 +48,214 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 %%
 
 [+-]?{DIGIT}+ {
-        printf("TOKEN NUMBER: %s\n", yytext);
+        // printf("TOKEN NUMBER: %s\n", yytext);
         columnNumber += yyleng;
         yyless(yyleng);
-        // return NUMBER;
+        return NUMBER;
 }
 
 {FUNCTION} {
-        printf("TOKEN FUNCTION: %s\n", yytext);
+        // printf("TOKEN FUNCTION: %s\n", yytext);
         columnNumber += yyleng;
-        // return FUNCTION;
+        return FUNCTION;
 }
 
 {INTEGER} {
-        printf("TOKEN INTEGER: %s\n", yytext);
+        // printf("TOKEN INTEGER: %s\n", yytext);
         columnNumber += yyleng;
-        // return INTEGER;
+        return INTEGER;
 }
 
 {SEMICOLON} {
-        printf("TOKEN SEMICOLON: %s\n", yytext);
+        // printf("TOKEN SEMICOLON: %s\n", yytext);
         columnNumber += yyleng;
-        // return SEMICOLON;
+        return SEMICOLON;
 }
 
 {BREAK} {
-        printf("TOKEN BREAK: %s\n", yytext);
+        // printf("TOKEN BREAK: %s\n", yytext);
         columnNumber += yyleng;
-        // return BREAK;
+        return BREAK;
 }
 
 {CONTINUE} {
-        printf("TOKEN CONTINUE: %s\n", yytext);
+        // printf("TOKEN CONTINUE: %s\n", yytext);
         columnNumber += yyleng;
-        // return CONTINUE;
+        return CONTINUE;
 }
 
 {IF} {
-        printf("TOKEN IF: %s\n", yytext);
+        // printf("TOKEN IF: %s\n", yytext);
         columnNumber += yyleng;
+        return IF;
 }
 
 {FOR} {
-        printf("TOKEN FOR: %s\n", yytext);
+        // printf("TOKEN FOR: %s\n", yytext);
         columnNumber += yyleng;
+        return FOR;
 }
 
 {TRUE} {
-        printf("TOKEN TRUE: %s\n", yytext);
+        // printf("TOKEN TRUE: %s\n", yytext);
         columnNumber += yyleng;
+        return TRUE;
 }
 
 {FALSE} {
-        printf("TOKEN FALSE: %s\n", yytext);
+        // printf("TOKEN FALSE: %s\n", yytext);
         columnNumber += yyleng;
+        return FALSE;
 }
 
 {PRINT} {
-        printf("TOKEN PRINT: %s\n", yytext);
+        // printf("TOKEN PRINT: %s\n", yytext);
         columnNumber += yyleng;
+        return PRINT;
 }
 
 {READ} {
-        printf("TOKEN READ: %s\n", yytext);
+        // printf("TOKEN READ: %s\n", yytext);
         columnNumber += yyleng;
+        return READ;
 }
 
 {RETURN} {
-        printf("TOKEN RETURN: %s\n", yytext);
+        // printf("TOKEN RETURN: %s\n", yytext);
         columnNumber += yyleng;
+        return RETURN;
 }
 
 {WHILE} {
-        printf("TOKEN WHILE: %s\n", yytext);
+        // printf("TOKEN WHILE: %s\n", yytext);
         columnNumber += yyleng;
+        return WHILE;
 }
 
 {VOID} {
-        printf("TOKEN VOID: %s\n", yytext);
+        // printf("TOKEN VOID: %s\n", yytext);
         columnNumber += yyleng;
+        return VOID;
 }
 
 {ASSIGN} {
-        printf("TOKEN ASSIGN: %s\n", yytext);
+        // printf("TOKEN ASSIGN: %s\n", yytext);
         columnNumber += yyleng;
+        return ASSIGN;
 }
 
 {SUB} {
-        printf("TOKEN SUB: %s\n", yytext);
+        // printf("TOKEN SUB: %s\n", yytext);
         columnNumber += yyleng;
+        return SUB;
 }
 
 {ADD} {
-        printf("TOKEN ADD: %s\n", yytext);
+        // printf("TOKEN ADD: %s\n", yytext);
         columnNumber += yyleng;
+        return ADD;
 }
 
 {MULT} {
-        printf("TOKEN MULT: %s\n", yytext);
+        // printf("TOKEN MULT: %s\n", yytext);
         columnNumber += yyleng;
+        return MULT;
 }
 
 {DIV} {
-        printf("TOKEN DIV: %s\n", yytext);
+        // printf("TOKEN DIV: %s\n", yytext);
         columnNumber += yyleng;
+        return DIV;
 }
 
 {MOD} {
-        printf("TOKEN MOD: %s\n", yytext);
+        // printf("TOKEN MOD: %s\n", yytext);
         columnNumber += yyleng;
+        return MOD;
 }
 
 {ELSE} {
-        printf("TOKEN ELSE: %s\n", yytext);
+        // printf("TOKEN ELSE: %s\n", yytext);
         columnNumber += yyleng;
+        return ELSE;
 }
 
 {COMMA} {
-        printf("TOKEN COMMA: %s\n", yytext);
+        // printf("TOKEN COMMA: %s\n", yytext);
         columnNumber += yyleng;
+        return COMMA;
 }
 
 {LEFT_PARENTHESIS} {
-        printf("TOKEN LEFT_PARENTHESIS: %s\n", yytext);
+        // printf("TOKEN LEFT_PARENTHESIS: %s\n", yytext);
         columnNumber += yyleng;
+        return LEFT_PARENTHESIS;
 }
 
 {RIGHT_PARENTHESIS} {
-        printf("TOKEN RIGHT_PARENTHESIS: %s\n", yytext);
+        // printf("TOKEN RIGHT_PARENTHESIS: %s\n", yytext);
         columnNumber += yyleng;
+        return RIGHT_PARENTHESIS;
 }
 
 {LEFT_SQUARE_BRACKET} {
-        printf("TOKEN LEFT_SQUARE_BRACKET: %s\n", yytext);
+        // printf("TOKEN LEFT_SQUARE_BRACKET: %s\n", yytext);
         columnNumber += yyleng;
+        return LEFT_SQUARE_BRACKET;
 }
 
 {RIGHT_SQUARE_BRACKET} {
-        printf("TOKEN RIGHT_SQUARE_BRACKET: %s\n", yytext);
+        // printf("TOKEN RIGHT_SQUARE_BRACKET: %s\n", yytext);
         columnNumber += yyleng;
+        return RIGHT_SQUARE_BRACKET;
 }
 
 {LEFT_CURLY} {
-        printf("TOKEN LEFT_CURLY: %s\n", yytext);
+        // printf("TOKEN LEFT_CURLY: %s\n", yytext);
         columnNumber += yyleng;
+        return LEFT_CURLY;
 }
 
 {RIGHT_CURLY} {
-        printf("TOKEN RIGHT_CURLY: %s\n", yytext);
+        // printf("TOKEN RIGHT_CURLY: %s\n", yytext);
         columnNumber += yyleng;
+        return RIGHT_CURLY;
 }
 
 {EQUALS} {
-        printf("TOKEN EQUALS: %s\n", yytext);
+        // printf("TOKEN EQUALS: %s\n", yytext);
         columnNumber += yyleng;
+        return EQUALS;
 }
 
 {LESSTHAN} {
-        printf("TOKEN LESSTHAN: %s\n", yytext);
+        // printf("TOKEN LESSTHAN: %s\n", yytext);
         columnNumber += yyleng;
+        return LESSTHAN;
 }
 
 {GREATERTHAN} {
-        printf("TOKEN GREATERTHAN: %s\n", yytext);
+        // printf("TOKEN GREATERTHAN: %s\n", yytext);
         columnNumber += yyleng;
+        return GREATERTHAN;
 }
 
 {LESSOREQUAL} {
-        printf("TOKEN LESSOREQUAL: %s\n", yytext);
+        // printf("TOKEN LESSOREQUAL: %s\n", yytext);
         columnNumber += yyleng;
+        return LESSOREQUAL;
 }
 
 {GREATOREQUAL} {
-        printf("TOKEN GREATOREQUAL: %s\n", yytext);
+        // printf("TOKEN GREATOREQUAL: %s\n", yytext);
         columnNumber += yyleng;
+        return GREATOREQUAL;
 }
 
 {IDENTIFIER} {
-        printf("TOKEN IDENTIFIER: %s\n", yytext);
+        // printf("TOKEN IDENTIFIER: %s\n", yytext);
         columnNumber += yyleng;
+        return IDENTIFIER;
 }
 
 {INVALIDIDENTIFIER} {
@@ -237,7 +264,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 }
 
 {COMMENT} {
-        printf("TOKEN COMMENT: %s\n", yytext);
+        // printf("TOKEN COMMENT: %s\n", yytext);
         columnNumber += yyleng;
 }
 
