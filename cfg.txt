@@ -16,7 +16,8 @@ mulop -> MULT | DIV
 factor -> RIGHT_PARENTHESIS math_expression LEFT_PARENTHESIS | NUMBER 
 
 --conditional expressions
-cond_expression -> 
-
-
+cond_expression -> cond_expression condop cond_expression | condterm
+condop -> condop -> EQUALS | LESSTHAN | GREATERTHAN | LESSOREQUALS | GREATOREQUALS
+condterm -> condfactor 
+condfactor -> RIGHT_PARENTHESIS cond_expression LEFT_PARENTHESIS | NUMBER  
 
