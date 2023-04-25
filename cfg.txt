@@ -1,3 +1,22 @@
+--start and functions
 program_start -> epsilon | functions
 functions -> function | function functions
-function -> FUNCTION INT IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY
+function -> FUNCTION INTEGER IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY
+
+--declaration and assignments
+integer_declaration -> INTEGER IDENTIFIER assignment_declaration SEMICOLON
+assignment_declaration -> epsilon | ASSIGN NUMBER
+assignment -> IDENTIFIER ASSIGN NUMBER SEMICOLON
+
+-- math expressions
+math_expression -> math_expression addop term | term
+addop -> ADD | SUB
+term -> term mulop factor | factor
+mulop -> MULT | DIV 
+factor -> RIGHT_PARENTHESIS math_expression LEFT_PARENTHESIS | NUMBER 
+
+--conditional expressions
+cond_expression -> 
+
+
+
