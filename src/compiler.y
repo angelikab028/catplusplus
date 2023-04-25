@@ -1,8 +1,9 @@
 %{
-
+#include <stdio.h>
+extern FILE* yyin;
 %}
-%token NUMBER FUNCTION INTEGER SEMICOLON
 %start prog_start
+%token NUMBER FUNCTION INTEGER SEMICOLON
 
 %%
 prog_start: %empty {printf("prog_start -> epsilon\n");}
