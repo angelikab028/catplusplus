@@ -28,3 +28,17 @@ cond_expression' -> condop condterm cond_expression' | epsilon
 condop -> EQUALS | LESSTHAN | GREATERTHAN | LESSOREQUALS | GREATOREQUALS
 condterm -> condfactor 
 condfactor -> RIGHT_PARENTHESIS cond_expression LEFT_PARENTHESIS | NUMBER
+
+expression can be:
+    variable declaration
+        array declaration
+        declaration + assignment 
+    variable assignment
+        array element assignment
+    math expression
+    relational/conditional expression
+    break
+    continue
+    read/write
+    function call
+    return
