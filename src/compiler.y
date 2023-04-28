@@ -23,11 +23,12 @@ arguments: %empty {printf("arguments -> epsilon\n");}
 
 repeat_arguments: %empty
                 | COMMA argument repeat_arguments
+                ;
 
 argument: INTEGER IDENTIFIER {printf("argument -> INT IDENTIFIER");}
         ;
 
-statements: %empty {printf("statements -> epsilon"\n);}
+statements: %empty {printf("statements -> epsilon\n");}
           | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
 
 statement: declaration
@@ -42,8 +43,8 @@ function_call: IDENTIFIER LEFT_PARENTHESIS params RIGHT_PARENTHESIS
             
 params: %empty
       ;
-%% 
-/* UNCOMMENT THIS!
+%%
+// UNCOMMENT THIS!
 int main(int argc, char* argv[]) {
     ++argv;
     --argc;
@@ -55,6 +56,5 @@ int main(int argc, char* argv[]) {
     // yylex();
     yyparse();
 }
-Need to turn in: src/compiler.y
-Testfiles for invalid syntax but proper tokens
-*/
+// Need to turn in: src/compiler.y
+// Testfiles for invalid syntax but proper tokens
