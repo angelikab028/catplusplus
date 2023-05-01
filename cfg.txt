@@ -6,6 +6,10 @@ functions' -> %empty | functions functions'
 function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY 
 function_return_type -> INTEGER | VOID
 
+arguments -> argument arguments'
+arguments' -> COMMA arguments arguments' | %empty
+argument -> INTEGER IDENTIFIER 
+
 --declaration and assignments
 integer_declaration -> INTEGER IDENTIFIER assignment_declaration SEMICOLON
 assignment_declaration -> %empty | ASSIGN NUMBER
