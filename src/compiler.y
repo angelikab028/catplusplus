@@ -56,5 +56,11 @@ int main(int argc, char* argv[]) {
     // yylex();
     yyparse();
 }
+<<<<<<< HEAD
 // Need to turn in: src/compiler.y
 // Testfiles for invalid syntax but proper tokens
+=======
+Need to turn in: src/compiler.y
+Testfiles for invalid syntax but proper tokens
+*/
+>>>>>>> main
