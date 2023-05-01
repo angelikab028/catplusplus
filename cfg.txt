@@ -29,19 +29,20 @@ condop -> EQUALS | LESSTHAN | GREATERTHAN | LESSOREQUALS | GREATOREQUALS
 condterm -> condfactor 
 condfactor -> RIGHT_PARENTHESIS cond_expression LEFT_PARENTHESIS | NUMBER
 
-expression can be:
-    https://alx71hub.github.io/hcb/#expression
-    variable declaration
-        array declaration
-        declaration + assignment 
-    variable assignment
-        array element assignment
-    math expression
-    relational/conditional expression
 
-    https://alx71hub.github.io/hcb/#statement
-    break
-    continue
-    read/write
-    function call
-    return
+expression -> cond_exp
+cond_exp -> add_exp | cond_exp LESSTHAN add_exp | cond_exp GREATERTHAN add_exp | cond_exp GREATOREQUALS add_exp | cond_exp LESSOREQUALS add_exp
+add_exp -> mult_exp | add_exp ADD mult_exp | add_exp SUB mult_exp
+mult_exp -> unary_exp | mult_exp MULT unary_exp | mult_exp DIV unary_exp | mult_exp MOD unary_exp
+unary_exp -> primary_exp
+primary_exp -> NUMBER | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS | IDENTIFIER | IDENTIFIER LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET
+
+statement -> exp_st | declare_st | jump_st | loop_st | if_st | statement_block | read_st | print_st
+exp_st -> expression SEMICOLON
+declare_st -> IDENTIFIER SEMICOLON
+statement_block -> LEFT_CURLY statement RIGHT_CURLY
+if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
+loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
+jump_st -> BREAK SEMICOLON | CONTINUE SEMICOLON | RETURN expression SEMICOLON | RETURN SEMICOLON
+read_st -> READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON
+print_st -> PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON
