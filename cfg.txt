@@ -5,30 +5,7 @@ functions -> function functions'
 functions' -> %empty | functions functions'
 function -> FUNCTION INTEGER IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY
 
---declaration and assignments
-integer_declaration -> INTEGER IDENTIFIER assignment_declaration SEMICOLON
-assignment_declaration -> %empty | ASSIGN NUMBER
-assignment -> IDENTIFIER ASSIGN NUMBER SEMICOLON
-
--- math expressions
--- (left recursion) math_expression -> math_expression addop term | term
-math_expression -> term math_expression'
-math_expression' -> addop term math_expression' | %empty
-addop -> ADD | SUB
--- (left recursion) term -> term mulop factor | factor
-term -> factor term'
-term' -> mulop factor term' | %empty
-mulop -> MULT | DIV 
-factor -> RIGHT_PARENTHESIS math_expression LEFT_PARENTHESIS | NUMBER 
-
---conditional expressions
--- (left recursion) cond_expression -> cond_expression condop condterm | condterm
-cond_expression -> condterm cond_expression'
-cond_expression' -> condop condterm cond_expression' | %empty
-condop -> EQUALS | LESSTHAN | GREATERTHAN | LESSOREQUALS | GREATOREQUALS
-condterm -> condfactor 
-condfactor -> RIGHT_PARENTHESIS cond_expression LEFT_PARENTHESIS | NUMBER
-
+--expressions (arithmetic and conditional)
 expression -> cond_exp
 cond_exp -> add_exp | cond_exp LESSTHAN add_exp | cond_exp GREATERTHAN add_exp | cond_exp GREATOREQUALS add_exp | cond_exp LESSOREQUALS add_exp
 add_exp -> mult_exp | add_exp ADD mult_exp | add_exp SUB mult_exp
@@ -36,11 +13,15 @@ mult_exp -> unary_exp | mult_exp MULT unary_exp | mult_exp DIV unary_exp | mult_
 unary_exp -> primary_exp
 primary_exp -> NUMBER | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS | IDENTIFIER | IDENTIFIER LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET
 
+--statements (jump, declarations, assignments, if-else, loops)
 statements -> statement statements'
 statements' -> %empty | statement statements'
-statement -> exp_st | declare_st | break_st | continue_st | return_st | loop_st | if_st | else_st | statement_block | read_st | print_st
+statement -> exp_st | declare_st | break_st | continue_st | return_st | loop_st | if_st | else_st | statement_block | read_st | print_st | assign_int_st | int_dec_st
 exp_st -> expression SEMICOLON
 declare_st -> IDENTIFIER SEMICOLON
+int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON
+assignment_dec -> %empty | ASSIGN NUMBER
+assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON
 statement_block -> LEFT_CURLY statements RIGHT_CURLY
 if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
 else_st -> ELSE statement_block | ELSE if_st
