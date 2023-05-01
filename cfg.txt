@@ -41,7 +41,7 @@ statements' -> epsilon | statement statements'
 statement -> exp_st | declare_st | break_st | continue_st | return_st | loop_st | if_st | else_st | statement_block | read_st | print_st
 exp_st -> expression SEMICOLON
 declare_st -> IDENTIFIER SEMICOLON
-statement_block -> LEFT_CURLY statement RIGHT_CURLY
+statement_block -> LEFT_CURLY statements RIGHT_CURLY
 if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
 else_st -> ELSE statement_block | ELSE if_st
 loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
