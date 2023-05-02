@@ -17,8 +17,8 @@ functionsprime: %empty {printf("functionsprime -> epsilon\n");}
           | function functionsprime {printf("functionsprime -> functions functions\'\n");}
           ;
 
-function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY 
-          {printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY\n");}
+function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block 
+          {printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");}
           ;
 
 function_return_type: INTEGER {printf("function_return_type -> INTEGER\n");}
