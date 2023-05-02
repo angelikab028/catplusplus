@@ -4,7 +4,7 @@ extern FILE* yyin;
 void yyerror(char const *msg);
 %}
 %start prog_start
-%token NUMBER FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF FOR TRUE FALSE PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUAL GREATOREQUAL IDENTIFIER
+%token NUMBER FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF FOR TRUE FALSE PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS IDENTIFIER
 
 %%
 prog_start: %empty {printf("prog_start -> epsilon\n");}
@@ -35,6 +35,37 @@ argumentsprime: COMMA argument argumentsprime {printf("argumentsprime -> COMMA a
 
 argument: INTEGER IDENTIFIER {printf("argument -> INTEGER IDENTIFIER\n");}
         ;
+
+expression: cond_exp {printf("expression -> cond_exp\n");}
+          ;
+
+cond_exp: add_exp                               {printf("cond_exp -> add_exp\n");}
+        | cond_exp LESSTHAN add_exp             {printf("cond_exp -> cond_exp LESSTHAN add_exp\n");}
+        | cond_exp GREATERTHAN add_exp          {printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");}
+        | cond_exp GREATOREQUALS add_exp        {printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");}
+        | cond_exp LESSOREQUALS add_exp         {printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");}
+        ;
+
+add_exp: mult_exp               {printf("add_exp -> mult_exp\n");} 
+       | add_exp ADD mult_exp   {printf("add_exp -> add_exp ADD mult_exp\n");} 
+       | add_exp SUB mult_exp   {printf("add_exp -> add_exp SUB mult_exp\n");} 
+       ;
+
+mult_exp: unary_exp                     {printf("mult_exp -> unary_exp\n");}
+        | mult_exp MULT unary_exp       {printf("mult_exp -> mult_exp MULT unary_exp\n");}
+        | mult_exp DIV unary_exp        {printf("mult_exp -> mult_exp DIV unary_exp\n");}
+        | mult_exp MOD unary_exp        {printf("mult_exp -> mult_exp MOD unary_exp\n");}
+        ;
+
+unary_exp: primary_exp          {printf("unary_exp -> primary_exp\n");}
+         ;
+
+primary_exp: NUMBER                                                             {printf("primary_exp -> NUMBER\n");}
+           | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                      {printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");}
+           | IDENTIFIER                                                         {printf("primary_exp -> IDENTIFIER\n");}
+           | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET        {printf("primary_exp -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");}
+           ;
+
 
 statements: statement statementsprime {printf("statements -> statement statementsprime\n");}
           ;
@@ -71,6 +102,35 @@ assign_int_st: IDENTIFIER ASSIGN NUMBER SEMICOLON {printf("IDENTIFIER ASSIGN NUM
 statement_block: LEFT_CURLY statements RIGHT_CURLY {printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");}
                ;
 
+if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");}
+     ;
+
+else_st: ELSE statement_block  {printf("else_st -> ELSE statement_block\n");}
+       | ELSE if_st            {printf("else_st -> ELSE if_st\n");}
+       | %empty                {printf("else_st -> epsilon\n");}
+       ;
+
+loop_st: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");}
+       ;
+
+break_st: BREAK SEMICOLON {printf("break_st -> BREAK SEMICOLON\n");}
+        ;
+
+continue_st: CONTINUE SEMICOLON {printf("continue_st -> CONTINUE SEMICOLON\n");}
+           ;
+
+return_st: RETURN return_exp SEMICOLON {printf("return_st -> RETURN return_exp SEMICOLON\n");}
+         ;
+
+return_exp: add_exp {printf("return_exp -> add_exp\n");}
+          | %empty {printf("return_exp -> epsilon\n");}
+          ;
+
+read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
+       ;
+
+print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
+        ;
 %%
 // UNCOMMENT THIS!
 

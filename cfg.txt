@@ -27,12 +27,12 @@ int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON
 assignment_dec -> %empty | ASSIGN NUMBER
 assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON
 statement_block -> LEFT_CURLY statements RIGHT_CURLY
-if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
-else_st -> ELSE statement_block | ELSE if_st
+if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st
+else_st -> ELSE statement_block | ELSE if_st | %empty
 loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block
 break_st -> BREAK SEMICOLON
 continue_st -> CONTINUE SEMICOLON 
 return_st -> RETURN return_exp SEMICOLON
-return_exp -> expression | %empty
+return_exp -> add_exp | %empty
 read_st -> READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON
 print_st -> PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON
