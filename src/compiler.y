@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 extern FILE* yyin;
+void yyerror(char const *msg);
 %}
 %start prog_start
 %token NUMBER FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF FOR TRUE FALSE PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUAL GREATOREQUAL IDENTIFIER
@@ -12,8 +13,8 @@ prog_start: %empty {printf("prog_start -> epsilon\n");}
 functions: function functionsprime {printf("function -> function functions\'\n");}
           ;     
 
-functionsprime: %empty {printf("functions\' -> %empty");}
-          | functions functionsprime {printf("functions\' -> functions functions\'\n");}
+functionsprime: %empty {printf("functionsprime -> epsilon");}
+          | functions functionsprime {printf("functionsprime -> functions functions\'\n");}
           ;
 
 function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY 
