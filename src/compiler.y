@@ -156,10 +156,6 @@ print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf(
 %%
 // UNCOMMENT THIS!
 
- void yyerror (char const *s) {
-   fprintf ("Error: On Line %d, column %d: %s \n", line_number, column_number, s);
- }
-
 int main(int argc, char* argv[]) {
     ++argv;
     --argc;
@@ -171,5 +167,10 @@ int main(int argc, char* argv[]) {
     // yylex();
     yyparse();
 }
+
+void yyerror (char const *s) {
+   fprintf ("Error: On Line %d, column %d: %s \n", line_number, column_number, s);
+}
+
 // Need to turn in: src/compiler.y
 // Testfiles for invalid syntax but proper tokens
