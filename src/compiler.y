@@ -80,7 +80,6 @@ statement: exp_st             {printf("statement -> exp_st\n");}
          | loop_st            {printf("statement -> loop_st\n");}
          | if_st              {printf("statement -> if_st\n");}
          | else_st            {printf("statement -> else_st\n");}
-         | statement_block    {printf("statement -> statement_block\n");}
          | read_st            {printf("statement -> read_st\n");}
          | print_st           {printf("statement -> print_st\n");}
          | assign_int_st      {printf("statement -> assign_int_st\n");} 
