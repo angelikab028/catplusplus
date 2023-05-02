@@ -17,8 +17,8 @@ functionsprime: %empty {printf("functionsprime -> epsilon\n");}
           | function functionsprime {printf("functionsprime -> functions functions\'\n");}
           ;
 
-function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY 
-          {printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY\n");}
+function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block 
+          {printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");}
           ;
 
 function_return_type: INTEGER {printf("function_return_type -> INTEGER\n");}
@@ -44,6 +44,7 @@ cond_exp: add_exp                               {printf("cond_exp -> add_exp\n")
         | cond_exp GREATERTHAN add_exp          {printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");}
         | cond_exp GREATOREQUALS add_exp        {printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");}
         | cond_exp LESSOREQUALS add_exp         {printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");}
+        | cond_exp EQUALS add_exp               {printf("cond_exp -> cond_exp EQUALS add_exp\n");}
         ;
 
 add_exp: mult_exp               {printf("add_exp -> mult_exp\n");} 
@@ -79,18 +80,16 @@ statement: exp_st             {printf("statement -> exp_st\n");}
          | return_st          {printf("statement -> return_st\n");} 
          | loop_st            {printf("statement -> loop_st\n");}
          | if_st              {printf("statement -> if_st\n");}
-         | else_st            {printf("statement -> else_st\n");}
-         | statement_block    {printf("statement -> statement_block\n");}
          | read_st            {printf("statement -> read_st\n");}
          | print_st           {printf("statement -> print_st\n");}
          | assign_int_st      {printf("statement -> assign_int_st\n");} 
-         | int_dec_st         {printf("statement -> int_dec_st\n");} 
+         | int_dec_st         {printf("statement -> int_dec_st\n");}
          ;
 
 exp_st: expression SEMICOLON {printf("exp_st -> expression SEMICOLON\n");}
       ;
 
-int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {printf("INTEGER IDENTIFIER assignment_dec SEMICOLON\n");}
+int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");}
           ;
 
 assignment_dec: %empty {printf("assignment_dec -> epsilon\n");}
@@ -100,6 +99,7 @@ assign_int_st: IDENTIFIER ASSIGN NUMBER SEMICOLON {printf("IDENTIFIER ASSIGN NUM
              ;
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");}
+               | LEFT_CURLY RIGHT_CURLY            {printf("statement_block -> LEFT_CURLY RIGHT_CURLY\n");}
                ;
 
 if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");}
@@ -126,10 +126,10 @@ return_exp: add_exp {printf("return_exp -> add_exp\n");}
           | %empty {printf("return_exp -> epsilon\n");}
           ;
 
-read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
+read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
        ;
 
-print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
+print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
         ;
 %%
 // UNCOMMENT THIS!
