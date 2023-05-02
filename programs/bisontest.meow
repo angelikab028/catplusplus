@@ -8,7 +8,7 @@ purr hairball test() {
             keep_going :3
         }
     meow array[x] 
-    meow 2n :3   
+    meow n :3   
     }
     scratch(x)
 }
