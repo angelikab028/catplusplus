@@ -39,8 +39,8 @@ RIGHT_CURLY "}"
 EQUALS "=="
 LESSTHAN "<"
 GREATERTHAN ">"
-LESSOREQUAL "<="
-GREATOREQUAL ">="
+LESSOREQUALS "<="
+GREATOREQUALS ">="
 VOID "hairball"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
 INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
@@ -240,16 +240,16 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         return GREATERTHAN;
 }
 
-{LESSOREQUAL} {
+{LESSOREQUALS} {
         // printf("TOKEN LESSOREQUAL: %s\n", yytext);
         columnNumber += yyleng;
-        return LESSOREQUAL;
+        return LESSOREQUALS;
 }
 
-{GREATOREQUAL} {
+{GREATOREQUALS} {
         // printf("TOKEN GREATOREQUAL: %s\n", yytext);
         columnNumber += yyleng;
-        return GREATOREQUAL;
+        return GREATOREQUALS;
 }
 
 {IDENTIFIER} {
@@ -283,6 +283,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 }
 %%
 // Remove main, move to Bison
+/*
 int main(int argc, char* argv[]) {
     ++argv;
     --argc;
@@ -293,3 +294,4 @@ int main(int argc, char* argv[]) {
     printf("Ctrl + D to quit\n");
     yylex();
 }
+*/
