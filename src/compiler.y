@@ -1,6 +1,8 @@
 %{
 #include <stdio.h>
 extern FILE* yyin;
+extern int line_number;
+extern int column_number;
 void yyerror(char const *msg);
 %}
 %start prog_start
@@ -155,7 +157,7 @@ print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf(
 // UNCOMMENT THIS!
 
  void yyerror (char const *s) {
-   fprintf (stderr, "%s\n", s);
+   fprintf ("Error: On Line %d, column %d: %s \n", line_number, column_number, s);
  }
 
 int main(int argc, char* argv[]) {
