@@ -9,42 +9,41 @@ extern FILE* yyin;
 prog_start: %empty {printf("prog_start -> epsilon\n");}
           | functions {printf("prog_start -> functions\n");}
           ;
-functions: function {printf("function -> function\n");}
-          | function functions {printf("function -> function functions\n");}
+functions: function functionsprime {printf("function -> function functions\'\n");}
+          ;     
+
+functionsprime: %empty {printf("functions\' -> %empty");}
+          | functions functionsprime {printf("functions\' -> functions functions\'\n");}
           ;
 
-function: FUNCTION INTEGER IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY
-          {printf("function -> FUNCTION INT IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY\n");}
+function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY 
+          {printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY\n");}
           ;
 
-arguments: %empty {printf("arguments -> epsilon\n");}
-         | argument repeat_arguments {printf("arguments -> argument COMMA arguments\n");}  
+function_return_type: INTEGER {printf("function_return_type -> INTEGER\n");}
+                    | VOID {printf("function_return_type -> VOID\n");}
+                    ;
+
+arguments: argument argumentsprime {printf("arguments -> argument argumentsprime\n");}
+         | %empty {printf("arguments -> epsilon\n");}
          ;
 
-repeat_arguments: %empty
-                | COMMA argument repeat_arguments
-                ;
+argumentsprime: COMMA arguments argumentsprime {printf("argumentsprime -> COMMA arguments argumentsprime\n");}
+              | %empty {printf("argumentsprime -> epsilon\n");}
+              ;
 
-argument: INTEGER IDENTIFIER {printf("argument -> INT IDENTIFIER");}
+argument: INTEGER IDENTIFIER {printf("argument -> INTEGER IDENTIFIER\n");}
         ;
 
-statements: %empty {printf("statements -> epsilon\n");}
-          | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+statements: %empty;
 
-statement: declaration
-         | function_call
-         ;
-
-declaration: INTEGER IDENTIFIER
-           ;
-
-function_call: IDENTIFIER LEFT_PARENTHESIS params RIGHT_PARENTHESIS
-             ;
-            
-params: %empty
-      ;
 %%
 // UNCOMMENT THIS!
+
+ void yyerror (char const *s) {
+   fprintf (stderr, "%s\n", s);
+ }
+
 int main(int argc, char* argv[]) {
     ++argv;
     --argc;
@@ -56,11 +55,5 @@ int main(int argc, char* argv[]) {
     // yylex();
     yyparse();
 }
-<<<<<<< HEAD
 // Need to turn in: src/compiler.y
 // Testfiles for invalid syntax but proper tokens
-=======
-Need to turn in: src/compiler.y
-Testfiles for invalid syntax but proper tokens
-*/
->>>>>>> main
