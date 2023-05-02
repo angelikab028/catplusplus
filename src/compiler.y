@@ -44,6 +44,7 @@ cond_exp: add_exp                               {printf("cond_exp -> add_exp\n")
         | cond_exp GREATERTHAN add_exp          {printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");}
         | cond_exp GREATOREQUALS add_exp        {printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");}
         | cond_exp LESSOREQUALS add_exp         {printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");}
+        | cond_exp EQUALS add_exp               {printf("cond_exp -> cond_exp EQUALS add_exp\n");}
         ;
 
 add_exp: mult_exp               {printf("add_exp -> mult_exp\n");} 
@@ -85,11 +86,10 @@ statement: exp_st             {printf("statement -> exp_st\n");}
          | int_dec_st         {printf("statement -> int_dec_st\n");}
          ;
 
-
 exp_st: expression SEMICOLON {printf("exp_st -> expression SEMICOLON\n");}
       ;
 
-int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {printf("INTEGER IDENTIFIER assignment_dec SEMICOLON\n");}
+int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");}
           ;
 
 assignment_dec: %empty {printf("assignment_dec -> epsilon\n");}
@@ -99,6 +99,7 @@ assign_int_st: IDENTIFIER ASSIGN NUMBER SEMICOLON {printf("IDENTIFIER ASSIGN NUM
              ;
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");}
+               | LEFT_CURLY RIGHT_CURLY            {printf("statement_block -> LEFT_CURLY RIGHT_CURLY\n");}
                ;
 
 if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");}
@@ -125,10 +126,10 @@ return_exp: add_exp {printf("return_exp -> add_exp\n");}
           | %empty {printf("return_exp -> epsilon\n");}
           ;
 
-read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
+read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
        ;
 
-print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
+print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");}
         ;
 %%
 // UNCOMMENT THIS!
