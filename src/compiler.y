@@ -25,6 +25,17 @@ function_return_type: INTEGER {printf("function_return_type -> INTEGER\n");}
                     | VOID {printf("function_return_type -> VOID\n");}
                     ;
 
+function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");}
+             ;
+
+parameters: expression parametersprime {printf("parameters -> IDENTIFIER parametersprime\n");}
+          | %empty                     {printf("parameters -> epsilon\n");}
+          ;
+
+parametersprime: COMMA expression parametersprime {printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");}
+               | %empty                           {printf("parametersprime -> epsilon\n");}
+               ;
+
 arguments: argument argumentsprime {printf("arguments -> argument argumentsprime\n");}
          | %empty {printf("arguments -> epsilon\n");}
          ;
@@ -65,6 +76,7 @@ primary_exp: NUMBER                                                             
            | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                      {printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");}
            | IDENTIFIER                                                         {printf("primary_exp -> IDENTIFIER\n");}
            | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET        {printf("primary_exp -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");}
+           | function_call                                                      {printf("primary_exp -> function_call\n");}
            ;
 
 
@@ -84,6 +96,8 @@ statement: exp_st             {printf("statement -> exp_st\n");}
          | print_st           {printf("statement -> print_st\n");}
          | assign_int_st      {printf("statement -> assign_int_st\n");} 
          | int_dec_st         {printf("statement -> int_dec_st\n");}
+         | array_dec_st       {printf("statement -> array_dec_st\n");}
+         | assign_array_st    {printf("statement -> assign_array_st\n");}
          ;
 
 exp_st: expression SEMICOLON {printf("exp_st -> expression SEMICOLON\n");}
@@ -92,11 +106,17 @@ exp_st: expression SEMICOLON {printf("exp_st -> expression SEMICOLON\n");}
 int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");}
           ;
 
+array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET assignment_dec SEMICOLON {printf("array_dec_st -> INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET SEMICOLON\n");}
+            ;
+
 assignment_dec: %empty {printf("assignment_dec -> epsilon\n");}
-              | ASSIGN NUMBER {printf("assignment_dec -> ASSIGN NUMBER\n");}
+              | ASSIGN add_exp {printf("assignment_dec -> ASSIGN NUMBER\n");}
               ;
-assign_int_st: IDENTIFIER ASSIGN NUMBER SEMICOLON {printf("IDENTIFIER ASSIGN NUMBER SEMICOLON\n");}
+assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");}
              ;
+
+assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");}
+               ;
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");}
                | LEFT_CURLY RIGHT_CURLY            {printf("statement_block -> LEFT_CURLY RIGHT_CURLY\n");}
