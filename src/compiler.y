@@ -169,7 +169,7 @@ int main(int argc, char* argv[]) {
 }
 
 void yyerror (char const *s) {
-   fprintf ("Error: On Line %d, column %d: %s \n", line_number, column_number, s);
+   fprintf (stderr, "Error: On Line %d, column %d: %s \n", line_number, column_number, s);
 }
 
 // Need to turn in: src/compiler.y
