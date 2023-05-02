@@ -1,8 +1,8 @@
 %{
 #include <stdio.h>
 #include "y.tab.h"
-int lineNumber = 1; 
-int columnNumber = 0;
+int line_number = 1; 
+int column_number  = 0;
 %}
 
 DIGIT [0-9]
