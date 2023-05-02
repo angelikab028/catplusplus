@@ -2,12 +2,12 @@
 program_start -> %empty | functions
 -- (left factoring) functions -> function | function functions
 functions -> function functions'
-functions' -> %empty | functions functions'
+functions' -> %empty | function functions'
 function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS LEFT_CURLY statements RIGHT_CURLY 
 function_return_type -> INTEGER | VOID
 
 arguments -> argument arguments'
-arguments' -> COMMA arguments arguments' | %empty
+arguments' -> COMMA argument arguments' | %empty
 argument -> INTEGER IDENTIFIER 
 
 --expressions (arithmetic and conditional)
@@ -16,14 +16,13 @@ cond_exp -> add_exp | cond_exp LESSTHAN add_exp | cond_exp GREATERTHAN add_exp |
 add_exp -> mult_exp | add_exp ADD mult_exp | add_exp SUB mult_exp
 mult_exp -> unary_exp | mult_exp MULT unary_exp | mult_exp DIV unary_exp | mult_exp MOD unary_exp
 unary_exp -> primary_exp
-primary_exp -> NUMBER | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS | IDENTIFIER | IDENTIFIER LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET
+primary_exp -> NUMBER | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS | IDENTIFIER | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET
 
 --statements (jump, declarations, assignments, if-else, loops)
 statements -> statement statements'
 statements' -> %empty | statement statements'
-statement -> exp_st | declare_st | break_st | continue_st | return_st | loop_st | if_st | else_st | statement_block | read_st | print_st | assign_int_st | int_dec_st
+statement -> exp_st | break_st | continue_st | return_st | loop_st | if_st | else_st | statement_block | read_st | print_st | assign_int_st | int_dec_st
 exp_st -> expression SEMICOLON
-declare_st -> IDENTIFIER SEMICOLON
 int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON
 assignment_dec -> %empty | ASSIGN NUMBER
 assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON
