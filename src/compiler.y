@@ -13,7 +13,7 @@ prog_start: %empty {printf("prog_start -> epsilon\n");}
 functions: function functionsprime {printf("function -> function functions\'\n");}
           ;     
 
-functionsprime: %empty {printf("functionsprime -> epsilon");}
+functionsprime: %empty {printf("functionsprime -> epsilon\n");}
           | functions functionsprime {printf("functionsprime -> functions functions\'\n");}
           ;
 
