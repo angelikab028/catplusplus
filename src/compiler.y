@@ -28,11 +28,11 @@ function_return_type: INTEGER {printf("function_return_type -> INTEGER\n");}
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");}
              ;
 
-parameters: IDENTIFIER parametersprime {printf("parameters -> IDENTIFIER parametersprime\n");}
+parameters: expression parametersprime {printf("parameters -> IDENTIFIER parametersprime\n");}
           | %empty                     {printf("parameters -> epsilon\n");}
           ;
 
-parametersprime: COMMA IDENTIFIER parametersprime {printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");}
+parametersprime: COMMA expression parametersprime {printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");}
                | %empty                           {printf("parametersprime -> epsilon\n");}
                ;
 
@@ -105,9 +105,9 @@ int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {printf("int_dec_st -> I
           ;
 
 assignment_dec: %empty {printf("assignment_dec -> epsilon\n");}
-              | ASSIGN NUMBER {printf("assignment_dec -> ASSIGN NUMBER\n");}
+              | ASSIGN add_exp {printf("assignment_dec -> ASSIGN NUMBER\n");}
               ;
-assign_int_st: IDENTIFIER ASSIGN NUMBER SEMICOLON {printf("IDENTIFIER ASSIGN NUMBER SEMICOLON\n");}
+assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");}
              ;
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");}
