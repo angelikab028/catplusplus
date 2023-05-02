@@ -283,6 +283,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 }
 %%
 // Remove main, move to Bison
+/*
 int main(int argc, char* argv[]) {
     ++argv;
     --argc;
@@ -293,3 +294,4 @@ int main(int argc, char* argv[]) {
     printf("Ctrl + D to quit\n");
     yylex();
 }
+*/
