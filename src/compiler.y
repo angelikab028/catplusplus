@@ -3,6 +3,7 @@
 extern FILE* yyin;
 extern int line_number;
 extern int column_number;
+extern char* yytext;
 void yyerror(char const *msg);
 %}
 %start prog_start
@@ -169,7 +170,7 @@ int main(int argc, char* argv[]) {
 }
 
 void yyerror (char const *s) {
-   fprintf (stderr, "Error: On Line %d, column %d: %s \n", line_number, column_number, s);
+   fprintf (stderr, "Error: On Line %d, column %d: %s at or near: \"%s\" \n", line_number, column_number, s, yytext);
 }
 
 // Need to turn in: src/compiler.y
