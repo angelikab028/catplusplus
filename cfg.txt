@@ -16,7 +16,7 @@ cond_exp -> add_exp | cond_exp LESSTHAN add_exp | cond_exp GREATERTHAN add_exp |
 add_exp -> mult_exp | add_exp ADD mult_exp | add_exp SUB mult_exp
 mult_exp -> unary_exp | mult_exp MULT unary_exp | mult_exp DIV unary_exp | mult_exp MOD unary_exp
 unary_exp -> primary_exp
-primary_exp -> NUMBER | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS | IDENTIFIER | IDENTIFIER LEFT_SQUARE_BRACKET expression RIGHT_SQUARE_BRACKET
+primary_exp -> NUMBER | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS | IDENTIFIER | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET
 
 --statements (jump, declarations, assignments, if-else, loops)
 statements -> statement statements'

@@ -1,0 +1,13 @@
+purr hairball test() {
+    meow x = 3 :3
+    hunt(x >= 10) {
+        x = x + 1 :3
+        purrhaps(x == 100) {
+            neuter :3
+        } else {
+            keep_going :3
+        }
+    meow array[n]    
+    scratch(x) 
+    }
+}
