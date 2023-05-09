@@ -125,16 +125,24 @@ unary_exp: primary_exp {
                 printf("unary_exp -> primary_exp\n");
         };
 
-primary_exp: NUMBER                                                             {printf("primary_exp -> NUMBER\n");}
-           | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                      {printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");}
-           | IDENTIFIER                                                         {printf("primary_exp -> IDENTIFIER\n");}
-           | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET        {printf("primary_exp -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");}
-           | function_call                                                      {printf("primary_exp -> function_call\n");}
-           ;
+primary_exp: NUMBER {
+                printf("primary_exp -> NUMBER\n");
+        }
+        | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {
+                printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");
+        }
+        | IDENTIFIER {
+                printf("primary_exp -> IDENTIFIER\n");
+        }
+        | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
+                printf("primary_exp -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
+        }
+        | function_call {
+                printf("primary_exp -> function_call\n");
+        };
 
 
-statements: statement statementsprime {printf("statements -> statement statementsprime\n");}
-          ;
+statements: statement statementsprime {printf("statements -> statement statementsprime\n");};
 
 statementsprime: %empty {printf("statementsprime -> epsilon\n");}
                | statement statementsprime {printf("statementsprime -> statement statementsprime\n");}
