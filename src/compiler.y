@@ -10,70 +10,120 @@ void yyerror(char const *msg);
 %token NUMBER FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF FOR TRUE FALSE PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS IDENTIFIER
 
 %%
-prog_start: %empty {printf("prog_start -> epsilon\n");}
-          | functions {printf("prog_start -> functions\n");}
-          ;
-functions: function functionsprime {printf("function -> function functions\'\n");}
-          ;     
+prog_start: %empty {
+                printf("prog_start -> epsilon\n");
+        }
+        | functions {
+                printf("prog_start -> functions\n");
+        };
+        
+functions: function functionsprime {
+                printf("function -> function functions\'\n");
+         };     
 
-functionsprime: %empty {printf("functionsprime -> epsilon\n");}
-          | function functionsprime {printf("functionsprime -> functions functions\'\n");}
-          ;
+functionsprime: %empty {
+                printf("functionsprime -> epsilon\n");
+        }
+        | function functionsprime {
+                printf("functionsprime -> functions functions\'\n");
+        };
 
-function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block 
-          {printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");}
-          ;
+function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
+                printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
+        };
 
-function_return_type: INTEGER {printf("function_return_type -> INTEGER\n");}
-                    | VOID {printf("function_return_type -> VOID\n");}
-                    ;
+function_return_type: INTEGER {
+                printf("function_return_type -> INTEGER\n");
+        }
+        | VOID {
+                printf("function_return_type -> VOID\n");
+        };
 
-function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");}
-             ;
+function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
+                printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");
+        };
 
-parameters: expression parametersprime {printf("parameters -> IDENTIFIER parametersprime\n");}
-          | %empty                     {printf("parameters -> epsilon\n");}
-          ;
+parameters: expression parametersprime {
+                printf("parameters -> IDENTIFIER parametersprime\n");
+        }
+        | %empty {
+                printf("parameters -> epsilon\n");
+        };
 
-parametersprime: COMMA expression parametersprime {printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");}
-               | %empty                           {printf("parametersprime -> epsilon\n");}
-               ;
+parametersprime: COMMA expression parametersprime {
+                printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");
+        }
+        | %empty {
+                printf("parametersprime -> epsilon\n");
+        };
 
-arguments: argument argumentsprime {printf("arguments -> argument argumentsprime\n");}
-         | %empty {printf("arguments -> epsilon\n");}
-         ;
+arguments: argument argumentsprime {
+                printf("arguments -> argument argumentsprime\n");
+        }
+        | %empty {
+                printf("arguments -> epsilon\n");
+        };
 
-argumentsprime: COMMA argument argumentsprime {printf("argumentsprime -> COMMA arguments argumentsprime\n");}
-              | %empty {printf("argumentsprime -> epsilon\n");}
-              ;
+argumentsprime: COMMA argument argumentsprime {
+                printf("argumentsprime -> COMMA arguments argumentsprime\n");
+        }
+        | %empty {
+                printf("argumentsprime -> epsilon\n");
+        };
 
-argument: INTEGER IDENTIFIER {printf("argument -> INTEGER IDENTIFIER\n");}
-        ;
+argument: INTEGER IDENTIFIER {
+                printf("argument -> INTEGER IDENTIFIER\n");
+        };
 
-expression: cond_exp {printf("expression -> cond_exp\n");}
-          ;
+expression: cond_exp {
+                printf("expression -> cond_exp\n");
+        };
 
-cond_exp: add_exp                               {printf("cond_exp -> add_exp\n");}
-        | cond_exp LESSTHAN add_exp             {printf("cond_exp -> cond_exp LESSTHAN add_exp\n");}
-        | cond_exp GREATERTHAN add_exp          {printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");}
-        | cond_exp GREATOREQUALS add_exp        {printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");}
-        | cond_exp LESSOREQUALS add_exp         {printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");}
-        | cond_exp EQUALS add_exp               {printf("cond_exp -> cond_exp EQUALS add_exp\n");}
-        ;
+cond_exp: add_exp {
+                printf("cond_exp -> add_exp\n");
+        }
+        | cond_exp LESSTHAN add_exp {
+                printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
+        }
+        | cond_exp GREATERTHAN add_exp {
+                printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
+        }
+        | cond_exp GREATOREQUALS add_exp {
+                printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
+        }
+        | cond_exp LESSOREQUALS add_exp {
+                printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
+        }
+        | cond_exp EQUALS add_exp {
+                printf("cond_exp -> cond_exp EQUALS add_exp\n");
+        };
 
-add_exp: mult_exp               {printf("add_exp -> mult_exp\n");} 
-       | add_exp ADD mult_exp   {printf("add_exp -> add_exp ADD mult_exp\n");} 
-       | add_exp SUB mult_exp   {printf("add_exp -> add_exp SUB mult_exp\n");} 
-       ;
+add_exp: mult_exp {
+                printf("add_exp -> mult_exp\n");
+        } 
+        | add_exp ADD mult_exp {
+                printf("add_exp -> add_exp ADD mult_exp\n");
+        } 
+        | add_exp SUB mult_exp {
+                printf("add_exp -> add_exp SUB mult_exp\n");
+        };
 
-mult_exp: unary_exp                     {printf("mult_exp -> unary_exp\n");}
-        | mult_exp MULT unary_exp       {printf("mult_exp -> mult_exp MULT unary_exp\n");}
-        | mult_exp DIV unary_exp        {printf("mult_exp -> mult_exp DIV unary_exp\n");}
-        | mult_exp MOD unary_exp        {printf("mult_exp -> mult_exp MOD unary_exp\n");}
-        ;
+mult_exp: unary_exp {
+                printf("mult_exp -> unary_exp\n");
+        }
+        | mult_exp MULT unary_exp {
+                printf("mult_exp -> mult_exp MULT unary_exp\n");
+        }
+        | mult_exp DIV unary_exp {
+                printf("mult_exp -> mult_exp DIV unary_exp\n");
+        }
+        | mult_exp MOD unary_exp {
+                printf("mult_exp -> mult_exp MOD unary_exp\n");
+        };
 
-unary_exp: primary_exp          {printf("unary_exp -> primary_exp\n");}
-         ;
+unary_exp: primary_exp {
+                printf("unary_exp -> primary_exp\n");
+        };
 
 primary_exp: NUMBER                                                             {printf("primary_exp -> NUMBER\n");}
            | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS                      {printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");}
