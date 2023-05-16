@@ -1,11 +1,106 @@
 %{
 #include <stdio.h>
+#include<string>
+#include<vector>
+#include<string.h>
+#include<stdlib.h>
+
 extern FILE* yyin;
 extern int line_number;
 extern int column_number;
 extern char* yytext;
 void yyerror(char const *msg);
+
+char *identToken;
+int numberToken;
+int  count_names = 0;
+
+enum Type { Integer, Array };
+
+struct Symbol {
+  std::string name;
+  Type type;
+};
+
+struct Function {
+  std::string name;
+  std::vector<Symbol> declarations;
+};
+
+std::vector <Function> symbol_table;
+
+// remember that Bison is a bottom up parser: that it parses leaf nodes first before
+// parsing the parent nodes. So control flow begins at the leaf grammar nodes
+// and propagates up to the parents.
+Function *get_function() {
+  int last = symbol_table.size()-1;
+  if (last < 0) {
+    printf("***Error. Attempt to call get_function with an empty symbol table\n");
+    printf("Create a 'Function' object using 'add_function_to_symbol_table' before\n");
+    printf("calling 'find' or 'add_variable_to_symbol_table'");
+    exit(1);
+  }
+  return &symbol_table[last];
+}
+
+// find a particular variable using the symbol table.
+// grab the most recent function, and linear search to
+// find the symbol you are looking for.
+// you may want to extend "find" to handle different types of "Integer" vs "Array"
+bool find(std::string &value) {
+  Function *f = get_function();
+  for(int i=0; i < f->declarations.size(); i++) {
+    Symbol *s = &f->declarations[i];
+    if (s->name == value) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// when you see a function declaration inside the grammar, add
+// the function name to the symbol table
+void add_function_to_symbol_table(std::string &value) {
+  Function f; 
+  f.name = value; 
+  symbol_table.push_back(f);
+}
+
+// when you see a symbol declaration inside the grammar, add
+// the symbol name as well as some type information to the symbol table
+void add_variable_to_symbol_table(std::string &value, Type t) {
+  Symbol s;
+  s.name = value;
+  s.type = t;
+  Function *f = get_function();
+  f->declarations.push_back(s);
+}
+
+// a function to print out the symbol table to the screen
+// largely for debugging purposes.
+void print_symbol_table(void) {
+  printf("symbol table:\n");
+  printf("--------------------\n");
+  for(int i=0; i<symbol_table.size(); i++) {
+    printf("function: %s\n", symbol_table[i].name.c_str());
+    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
+      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
+    }
+  }
+  printf("--------------------\n");
+}
+
+struct CodeNode {
+    std::string code; // generated code as a string.
+    std::string name;
+};
 %}
+
+%union {
+  char *op_val;
+  struct CodeNode *node;
+}
+%define parse.error verbose
 %start prog_start
 %token NUMBER FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF FOR TRUE FALSE PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS IDENTIFIER
 
