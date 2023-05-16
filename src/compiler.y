@@ -10,6 +10,7 @@ extern int line_number;
 extern int column_number;
 extern char* yytext;
 void yyerror(char const *msg);
+extern int yylex(void);
 
 char *identToken;
 int numberToken;

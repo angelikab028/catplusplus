@@ -1,8 +1,9 @@
 %{
 #include <stdio.h>
-#include "y.tab.h"
+#include "compiler.tab.h"
 int line_number = 1; 
 int column_number  = 0;
+
 %}
 
 DIGIT [0-9]
@@ -260,7 +261,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 {INVALIDIDENTIFIER} {
         printf("INVALID IDENTIFIER ERROR (CANNOT BEGIN WITH NUMBER) AT LINE %d, COLUMN %d: %s\n", line_number, column_number, yytext);
-        return;
+        exit(1);
 }
 
 {COMMENT} {
@@ -279,7 +280,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 . { 
         printf("UNRECOGNIZED SYMBOL ERROR AT LINE %d, COLUMN %d: %s\n", line_number, column_number, yytext);
-        return; 
+        exit(1); 
 }
 %%
 // Remove main, move to Bison
