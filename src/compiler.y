@@ -240,7 +240,7 @@ symbol: NUMBER {
         |
         IDENTIFIER {
             printf("symbol -> IDENTIFIER\n");
-        }
+        };
 
 statements: statement statementsprime {
                 printf("statements -> statement statementsprime\n");
