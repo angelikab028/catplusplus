@@ -221,14 +221,11 @@ unary_exp: primary_exp {
                 printf("unary_exp -> primary_exp\n");
         };
 
-primary_exp: NUMBER {
-                printf("primary_exp -> NUMBER\n");
+primary_exp: symbol {
+                printf("primary_exp -> symbol\n");
         }
         | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {
                 printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");
-        }
-        | IDENTIFIER {
-                printf("primary_exp -> IDENTIFIER\n");
         }
         | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
                 printf("primary_exp -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
@@ -236,7 +233,14 @@ primary_exp: NUMBER {
         | function_call {
                 printf("primary_exp -> function_call\n");
         };
-
+    
+symbol: NUMBER {
+            printf("symbol -> NUMBER\n");
+        }
+        |
+        IDENTIFIER {
+            printf("symbol -> IDENTIFIER\n");
+        }
 
 statements: statement statementsprime {
                 printf("statements -> statement statementsprime\n");
