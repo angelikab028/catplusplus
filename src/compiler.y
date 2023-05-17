@@ -101,29 +101,47 @@ struct CodeNode {
   char *op_val;
   struct CodeNode *node;
 }
+
 %define parse.error verbose
 %start prog_start
-%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF FOR TRUE FALSE PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS
+%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS FOR TRUE FALSE
 %token <op_val> NUMBER
 %token <op_val> IDENTIFIER
 %type <op_val> symbol
 %type <op_val> function_identifier
+%type <node> prog_start
 %type <node> functions
 %type <node> function
 %type <node> statements
 %type <node> statement
 
-
 %%
 prog_start: %empty {
-                printf("prog_start -> epsilon\n");
+                // printf("prog_start -> epsilon\n");
+                // Empty.
+                CodeNode *node = new CodeNode;
+                printf("Empty file, should generate no code:\n");
+                printf("%s\n", node->code.c_str());
+                $$ = node;
         }
         | functions {
-                printf("prog_start -> functions\n");
+                // printf("prog_start -> functions\n");
+                CodeNode *node = $1;
+                std::string code = node->code;
+                printf("Generated Code:\n");
+                printf("%s\n", code.c_str());
         };
         
 functions: function functionsprime {
-                printf("function -> function functions\'\n");
+                //printf("function -> function functions\'\n");
+                // The "functions" non-terminal contains all the *functions*, and the code they all contain.
+                // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
+                CodeNode *func = $1;
+                CodeNode *funcs = $2;
+                std::string code = func->code + funcs->code;
+                CodeNode *node = new CodeNode;
+                node->code = code;
+                $$ = node;
          };     
 
 functionsprime: %empty {
