@@ -108,6 +108,11 @@ struct CodeNode {
 %token <op_val> IDENTIFIER
 %type <op_val> symbol
 %type <op_val> function_ident
+%type <node> functions
+%type <node> function
+%type <node> statements
+%type <node> statement
+
 
 %%
 prog_start: %empty {
