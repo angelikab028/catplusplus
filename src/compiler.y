@@ -107,7 +107,7 @@ struct CodeNode {
 %token <op_val> NUMBER
 %token <op_val> IDENTIFIER
 %type <op_val> symbol
-%type <op_val> function_ident
+%type <op_val> function_identifier
 %type <node> functions
 %type <node> function
 %type <node> statements
@@ -133,9 +133,13 @@ functionsprime: %empty {
                 printf("functionsprime -> functions functions\'\n");
         };
 
-function: FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
+function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
         };
+
+function_identifier: IDENTIFIER {
+                printf("function_identifier -> IDENTIFIER\n");
+        }
 
 function_return_type: INTEGER {
                 printf("function_return_type -> INTEGER\n");
