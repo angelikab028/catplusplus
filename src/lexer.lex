@@ -3,7 +3,8 @@
 #include "compiler.tab.h"
 int line_number = 1; 
 int column_number  = 0;
-
+extern char *identToken;
+extern int numberToken;
 %}
 
 DIGIT [0-9]
@@ -52,6 +53,10 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         // printf("TOKEN NUMBER: %s\n", yytext);
         column_number += yyleng;
         yyless(yyleng);
+        char * token = new char[yyleng];
+        strcpy(token, yytext);
+        yylval.op_val = token;
+        numberToken = atoi(yytext); 
         return NUMBER;
 }
 
@@ -256,6 +261,10 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 {IDENTIFIER} {
         // printf("TOKEN IDENTIFIER: %s\n", yytext);
         column_number += yyleng;
+        char * token = new char[yyleng];
+        strcpy(token, yytext);
+        yylval.op_val = token;
+        identToken = yytext; 
         return IDENTIFIER;
 }
 

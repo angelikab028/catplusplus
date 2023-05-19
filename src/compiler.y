@@ -152,18 +152,23 @@ functions: function functions {
          };
 
 function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
-                printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
+                printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
         };
 
 function_identifier: IDENTIFIER {
                 printf("function_identifier -> IDENTIFIER\n");
+                std::string func_name = $1;
+                //add_function_to_symbol_table(func_name);
+                //print_symbol_table();
+
+                //$$ = $1;
         };
 
 function_return_type: INTEGER {
-                printf("function_return_type -> INTEGER\n");
+                //printf("function_return_type -> INTEGER\n");
         }
         | VOID {
-                printf("function_return_type -> VOID\n");
+                //printf("function_return_type -> VOID\n");
         };
 
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
