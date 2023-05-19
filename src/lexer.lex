@@ -23,7 +23,6 @@ SEMICOLON ":3"
 BREAK "neuter"
 CONTINUE "keep_going"
 IF "purrhaps"
-FOR "fur"
 TRUE "furreal"
 FALSE "hiss"
 COMMENT "O_O"([ \t]?.)*
@@ -43,7 +42,6 @@ LESSTHAN "<"
 GREATERTHAN ">"
 LESSOREQUALS "<="
 GREATOREQUALS ">="
-VOID "hairball"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
 INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
@@ -96,24 +94,6 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         return IF;
 }
 
-{FOR} {
-        // printf("TOKEN FOR: %s\n", yytext);
-        column_number += yyleng;
-        return FOR;
-}
-
-{TRUE} {
-        // printf("TOKEN TRUE: %s\n", yytext);
-        column_number += yyleng;
-        return TRUE;
-}
-
-{FALSE} {
-        // printf("TOKEN FALSE: %s\n", yytext);
-        column_number += yyleng;
-        return FALSE;
-}
-
 {PRINT} {
         // printf("TOKEN PRINT: %s\n", yytext);
         column_number += yyleng;
@@ -136,12 +116,6 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         // printf("TOKEN WHILE: %s\n", yytext);
         column_number += yyleng;
         return WHILE;
-}
-
-{VOID} {
-        // printf("TOKEN VOID: %s\n", yytext);
-        column_number += yyleng;
-        return VOID;
 }
 
 {ASSIGN} {
