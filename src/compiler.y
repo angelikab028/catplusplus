@@ -1,9 +1,10 @@
 %{
 #include <stdio.h>
-#include<string>
-#include<vector>
-#include<string.h>
-#include<stdlib.h>
+#include <string>
+#include <vector>
+#include <string.h>
+#include <stdlib.h>
+#include <sstream> // using sstream instead of to_string because stdlib on bolt doesn't have to_string in the stl (why?)
 
 extern FILE* yyin;
 extern int line_number;
@@ -91,6 +92,17 @@ void print_symbol_table(void) {
   printf("--------------------\n");
 }
 
+// a function to create a temporary register (remember that we use three address code)
+// taken from slides
+std::string create_temp() {
+        static int num = 0;
+        std::ostringstream ss;
+        ss << num;
+        std::string value = "_temp" + ss.str();
+        num += 1;
+        return value;
+}
+
 struct CodeNode {
     std::string code; // generated code as a string.
     std::string name;
@@ -112,6 +124,7 @@ struct CodeNode {
 %type <node> prog_start
 %type <node> functions
 %type <node> function
+%type <node> functionsprime
 %type <node> statements
 %type <node> statement
 
@@ -142,13 +155,13 @@ functions: function functionsprime {
                 CodeNode *node = new CodeNode;
                 node->code = code;
                 $$ = node;
-         };     
+         };
 
 functionsprime: %empty {
-                printf("functionsprime -> epsilon\n");
+                //printf("functionsprime -> epsilon\n");
         }
         | function functionsprime {
-                printf("functionsprime -> functions functions\'\n");
+                //printf("functionsprime -> functions functions\'\n");
         };
 
 function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
@@ -157,13 +170,10 @@ function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arg
 
 function_identifier: IDENTIFIER {
                 printf("function_identifier -> IDENTIFIER\n");
-        }
+        };
 
 function_return_type: INTEGER {
                 printf("function_return_type -> INTEGER\n");
-        }
-        | VOID {
-                printf("function_return_type -> VOID\n");
         };
 
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
