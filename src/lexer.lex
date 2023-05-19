@@ -23,8 +23,6 @@ SEMICOLON ":3"
 BREAK "neuter"
 CONTINUE "keep_going"
 IF "purrhaps"
-TRUE "furreal"
-FALSE "hiss"
 COMMENT "O_O"([ \t]?.)*
 PRINT "scratch"
 READ "litter"
