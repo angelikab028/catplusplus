@@ -126,6 +126,8 @@ struct CodeNode {
 %type <node> function
 %type <node> statements
 %type <node> statement
+%type <node> arguments
+%type <node> argument
 
 %%
 prog_start: functions {
@@ -159,7 +161,6 @@ function_identifier: IDENTIFIER {
                 printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
                 add_function_to_symbol_table(func_name);
-                // print_symbol_table();
                 $$ = $1;
         };
 
@@ -196,7 +197,11 @@ argumentsprime: COMMA argument argumentsprime {
         };
 
 argument: INTEGER IDENTIFIER {
-                printf("argument -> INTEGER IDENTIFIER\n");
+                //printf("argument -> INTEGER IDENTIFIER\n");
+                CodeNode *node = new CodeNode;
+                // todo: generate parameter code, pass it up
+                std::string ident = $2;
+                $$ = node;
         };
 
 expression: cond_exp {
