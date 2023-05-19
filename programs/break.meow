@@ -1,6 +1,6 @@
 O_O This is a simple loop with a break statement
 
-purr hairball main() {
+purr meow main() {
     meow i :3
 
     i = 0 :3

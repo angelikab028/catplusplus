@@ -6,7 +6,7 @@ purr meow mult(meow a, meow b) {
     knead a * b :3
 }
 
-purr hairball main() {
+purr meow main() {
     meow a :3
     meow b :3
     meow c :3

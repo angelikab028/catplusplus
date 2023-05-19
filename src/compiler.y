@@ -116,7 +116,7 @@ struct CodeNode {
 
 %define parse.error verbose
 %start prog_start
-%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE VOID ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS FOR TRUE FALSE
+%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS
 %token <op_val> NUMBER
 %token <op_val> IDENTIFIER
 %type <op_val> symbol
@@ -151,24 +151,16 @@ functions: function functions {
                 printf("functions -> epsilon\n");
          };
 
-function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
+function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
         };
 
 function_identifier: IDENTIFIER {
                 printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
-                //add_function_to_symbol_table(func_name);
-                //print_symbol_table();
-
-                //$$ = $1;
-        };
-
-function_return_type: INTEGER {
-                //printf("function_return_type -> INTEGER\n");
-        }
-        | VOID {
-                //printf("function_return_type -> VOID\n");
+                add_function_to_symbol_table(func_name);
+                // print_symbol_table();
+                $$ = $1;
         };
 
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
