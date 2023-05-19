@@ -124,45 +124,32 @@ struct CodeNode {
 %type <node> prog_start
 %type <node> functions
 %type <node> function
-%type <node> functionsprime
 %type <node> statements
 %type <node> statement
 
 %%
-prog_start: %empty {
-                // printf("prog_start -> epsilon\n");
-                // Empty.
-                CodeNode *node = new CodeNode;
-                printf("Empty file, should generate no code:\n");
-                printf("%s\n", node->code.c_str());
-                $$ = node;
-        }
-        | functions {
-                // printf("prog_start -> functions\n");
-                CodeNode *node = $1;
-                std::string code = node->code;
-                printf("Generated Code:\n");
-                printf("%s\n", code.c_str());
+prog_start: functions {
+                printf("prog_start -> functions\n");
+                //CodeNode *node = $1;
+                //std::string code = node->code;
+                //printf("Generated Code:\n");
+                //printf("%s\n", code.c_str());
         };
         
-functions: function functionsprime {
-                //printf("function -> function functions\'\n");
+functions: function functions {
+                printf("function -> function functions\'\n");
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
-                CodeNode *func = $1;
-                CodeNode *funcs = $2;
-                std::string code = func->code + funcs->code;
-                CodeNode *node = new CodeNode;
-                node->code = code;
-                $$ = node;
+                //CodeNode *func = $1;
+                //CodeNode *funcs = $2;
+                //std::string code = func->code + funcs->code;
+                //CodeNode *node = new CodeNode;
+                //node->code = code;
+                //$$ = node;
+         }
+         | %empty {
+                printf("functions -> epsilon\n");
          };
-
-functionsprime: %empty {
-                //printf("functionsprime -> epsilon\n");
-        }
-        | function functionsprime {
-                //printf("functionsprime -> functions functions\'\n");
-        };
 
 function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 printf("function -> FUNCTION function_return_type IDENTIFIER LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
@@ -174,6 +161,9 @@ function_identifier: IDENTIFIER {
 
 function_return_type: INTEGER {
                 printf("function_return_type -> INTEGER\n");
+        }
+        | VOID {
+                printf("function_return_type -> VOID\n");
         };
 
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
@@ -268,12 +258,16 @@ primary_exp: symbol {
         | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {
                 printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");
         }
-        | IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
-                printf("primary_exp -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
+        | array_element {
+                printf("primary_exp -> array_element\n");
         }
         | function_call {
                 printf("primary_exp -> function_call\n");
         };
+
+array_element: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
+        printf("array_element -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
+};
     
 symbol: NUMBER {
             printf("symbol -> NUMBER\n");
@@ -354,7 +348,7 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
         };
 
-assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
+assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
         };
 
