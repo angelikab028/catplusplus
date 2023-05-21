@@ -156,15 +156,20 @@ functions: function functions {
 function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 //printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
-                node = $5;
+                char *c = $3;
+                std::string function_identifier(c);
+                CodeNode *arg = $5;
+                node->code = function_identifier + arg->code;
                 $$ = node;
         };
 
 function_identifier: IDENTIFIER {
                 //printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
+                std::string functionDeclaration = "func " + func_name + "\n";
+                char *c = &*functionDeclaration.begin(); // memory hack!
                 add_function_to_symbol_table(func_name);
-                $$ = $1;
+                $$ = c;
         };
 
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
