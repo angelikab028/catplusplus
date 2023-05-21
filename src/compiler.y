@@ -171,9 +171,6 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 char *c = $3;
                 std::string function_identifier(c);
 
-                printf("What happened to my identifier... ");
-                printf(function_identifier.c_str());
-
                 // These lines get the arguments of the function. 
                 CodeNode *arg = $5;
                 node->code = function_identifier + arg->code;
