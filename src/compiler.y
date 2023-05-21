@@ -49,11 +49,11 @@ Function *get_function() {
 // grab the most recent function, and linear search to
 // find the symbol you are looking for.
 // you may want to extend "find" to handle different types of "Integer" vs "Array"
-bool find(std::string &value) {
+bool find(std::string &value, Type t) {
   Function *f = get_function();
   for(int i=0; i < f->declarations.size(); i++) {
     Symbol *s = &f->declarations[i];
-    if (s->name == value) {
+    if (s->name == value && s->type == t) {
       return true;
     }
   }
@@ -137,6 +137,7 @@ prog_start: functions {
                 std::string code = node->code;
                 printf("Generated Code:\n");
                 printf("%s\n", code.c_str());
+                print_symbol_table();
         };
         
 functions: function functions {
@@ -233,6 +234,10 @@ arguments: argument argumentsprime {
                         {
                                 currVar = currLine.substr(2);
                         }
+                        if (find(currVar, Integer))
+                        {
+
+                        }
                         intConverter << currentRegister++;
                         variableAssignments += "= " + currVar + ", " + "$" + intConverter.str() + "\n";
                         intConverter.str("");
@@ -275,6 +280,7 @@ argument: INTEGER IDENTIFIER {
                 // Generates argument declarations, and passes it upward.
                 CodeNode *node = new CodeNode;
                 std::string ident = $2;
+                add_variable_to_symbol_table(ident, Integer);
                 std::string variableDeclaration = ". " + ident + "\n";
                 node->code = variableDeclaration;
                 $$ = node;
