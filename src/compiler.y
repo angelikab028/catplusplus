@@ -489,10 +489,19 @@ int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
                 //printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");
 
                 std::string ident = $2;
+
+                if (find(ident, Integer))
+                {
+                        std::string funcName = get_function()->name;
+                        std::string errorMsg = "In function \"" + funcName + "\": redeclaration of variable \"" + ident + "\"";
+                        
+                        yyerror(errorMsg.c_str());
+                }
+
+                add_variable_to_symbol_table(ident, Integer);
+
                 CodeNode *assignment = $3;
                 CodeNode *node = new CodeNode;
-
-                // TODO: Error check and add to symbol table.
 
                 std::string variableDeclaration = ". " + ident + "\n";
                 node->code = variableDeclaration;
