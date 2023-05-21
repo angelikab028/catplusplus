@@ -406,39 +406,75 @@ statementsprime: %empty {
 
 statement: exp_st {
                 //printf("statement -> exp_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | break_st {
                 //printf("statement -> break_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | continue_st {
                 //printf("statement -> continue_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | return_st {
                 //printf("statement -> return_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         } 
         | loop_st {
                 //printf("statement -> loop_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | if_st {
                 //printf("statement -> if_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | read_st {
                 //printf("statement -> read_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | print_st {
                 //printf("statement -> print_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | assign_int_st {
                 //printf("statement -> assign_int_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         } 
         | int_dec_st {
                 //printf("statement -> int_dec_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | array_dec_st {
                 //printf("statement -> array_dec_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | assign_array_st {
                 //printf("statement -> assign_array_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 exp_st: expression SEMICOLON {
