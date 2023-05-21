@@ -131,15 +131,15 @@ struct CodeNode {
 
 %%
 prog_start: functions {
-                printf("prog_start -> functions\n");
+                ////printf("prog_start -> functions\n");
                 //CodeNode *node = $1;
                 //std::string code = node->code;
-                //printf("Generated Code:\n");
-                //printf("%s\n", code.c_str());
+                ////printf("Generated Code:\n");
+                ////printf("%s\n", code.c_str());
         };
         
 functions: function functions {
-                printf("function -> function functions\'\n");
+                ////printf("function -> function functions\'\n");
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
                 //CodeNode *func = $1;
@@ -150,54 +150,54 @@ functions: function functions {
                 //$$ = node;
          }
          | %empty {
-                printf("functions -> epsilon\n");
+                ////printf("functions -> epsilon\n");
          };
 
 function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
-                printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
+                //printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
         };
 
 function_identifier: IDENTIFIER {
-                printf("function_identifier -> IDENTIFIER\n");
+                //printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
                 add_function_to_symbol_table(func_name);
                 $$ = $1;
         };
 
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
-                printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");
+                //printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");
         };
 
 parameters: expression parametersprime {
-                printf("parameters -> IDENTIFIER parametersprime\n");
+                //printf("parameters -> IDENTIFIER parametersprime\n");
         }
         | %empty {
-                printf("parameters -> epsilon\n");
+                //printf("parameters -> epsilon\n");
         };
 
 parametersprime: COMMA expression parametersprime {
-                printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");
+                //printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");
         }
         | %empty {
-                printf("parametersprime -> epsilon\n");
+                //printf("parametersprime -> epsilon\n");
         };
 
 arguments: argument argumentsprime {
-                printf("arguments -> argument argumentsprime\n");
+                //printf("arguments -> argument argumentsprime\n");
         }
         | %empty {
-                printf("arguments -> epsilon\n");
+                //printf("arguments -> epsilon\n");
         };
 
 argumentsprime: COMMA argument argumentsprime {
-                printf("argumentsprime -> COMMA arguments argumentsprime\n");
+                //printf("argumentsprime -> COMMA arguments argumentsprime\n");
         }
         | %empty {
-                printf("argumentsprime -> epsilon\n");
+                //printf("argumentsprime -> epsilon\n");
         };
 
 argument: INTEGER IDENTIFIER {
-                //printf("argument -> INTEGER IDENTIFIER\n");
+                ////printf("argument -> INTEGER IDENTIFIER\n");
                 CodeNode *node = new CodeNode;
                 // todo: generate parameter code, pass it up
                 std::string ident = $2;
@@ -205,205 +205,205 @@ argument: INTEGER IDENTIFIER {
         };
 
 expression: cond_exp {
-                printf("expression -> cond_exp\n");
+                //printf("expression -> cond_exp\n");
         };
 
 cond_exp: add_exp {
-                printf("cond_exp -> add_exp\n");
+                //printf("cond_exp -> add_exp\n");
         }
         | cond_exp LESSTHAN add_exp {
-                printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
+                //printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
         }
         | cond_exp GREATERTHAN add_exp {
-                printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
+                //printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
         }
         | cond_exp GREATOREQUALS add_exp {
-                printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
+                //printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
         }
         | cond_exp LESSOREQUALS add_exp {
-                printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
+                //printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
         }
         | cond_exp EQUALS add_exp {
-                printf("cond_exp -> cond_exp EQUALS add_exp\n");
+                //printf("cond_exp -> cond_exp EQUALS add_exp\n");
         };
 
 add_exp: mult_exp {
-                printf("add_exp -> mult_exp\n");
+                //printf("add_exp -> mult_exp\n");
         } 
         | add_exp ADD mult_exp {
-                printf("add_exp -> add_exp ADD mult_exp\n");
+                //printf("add_exp -> add_exp ADD mult_exp\n");
         } 
         | add_exp SUB mult_exp {
-                printf("add_exp -> add_exp SUB mult_exp\n");
+                //printf("add_exp -> add_exp SUB mult_exp\n");
         };
 
 mult_exp: unary_exp {
-                printf("mult_exp -> unary_exp\n");
+                //printf("mult_exp -> unary_exp\n");
         }
         | mult_exp MULT unary_exp {
-                printf("mult_exp -> mult_exp MULT unary_exp\n");
+                //printf("mult_exp -> mult_exp MULT unary_exp\n");
         }
         | mult_exp DIV unary_exp {
-                printf("mult_exp -> mult_exp DIV unary_exp\n");
+                //printf("mult_exp -> mult_exp DIV unary_exp\n");
         }
         | mult_exp MOD unary_exp {
-                printf("mult_exp -> mult_exp MOD unary_exp\n");
+                //printf("mult_exp -> mult_exp MOD unary_exp\n");
         };
 
 unary_exp: primary_exp {
-                printf("unary_exp -> primary_exp\n");
+                //printf("unary_exp -> primary_exp\n");
         };
 
 primary_exp: symbol {
-                printf("primary_exp -> symbol\n");
+                //printf("primary_exp -> symbol\n");
         }
         | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {
-                printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");
+                //printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");
         }
         | array_element {
-                printf("primary_exp -> array_element\n");
+                //printf("primary_exp -> array_element\n");
         }
         | function_call {
-                printf("primary_exp -> function_call\n");
+                //printf("primary_exp -> function_call\n");
         };
 
 array_element: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
-        printf("array_element -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
+        //printf("array_element -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
 };
     
 symbol: NUMBER {
-            printf("symbol -> NUMBER\n");
+            //printf("symbol -> NUMBER\n");
         }
         |
         IDENTIFIER {
-            printf("symbol -> IDENTIFIER\n");
+            //printf("symbol -> IDENTIFIER\n");
         };
 
 statements: statement statementsprime {
-                printf("statements -> statement statementsprime\n");
+                //printf("statements -> statement statementsprime\n");
         };
 
 statementsprime: %empty {
-                printf("statementsprime -> epsilon\n");
+                //printf("statementsprime -> epsilon\n");
         }
         | statement statementsprime {
-                printf("statementsprime -> statement statementsprime\n");
+                //printf("statementsprime -> statement statementsprime\n");
         };
 
 statement: exp_st {
-                printf("statement -> exp_st\n");
+                //printf("statement -> exp_st\n");
         }
         | break_st {
-                printf("statement -> break_st\n");
+                //printf("statement -> break_st\n");
         }
         | continue_st {
-                printf("statement -> continue_st\n");
+                //printf("statement -> continue_st\n");
         }
         | return_st {
-                printf("statement -> return_st\n");
+                //printf("statement -> return_st\n");
         } 
         | loop_st {
-                printf("statement -> loop_st\n");
+                //printf("statement -> loop_st\n");
         }
         | if_st {
-                printf("statement -> if_st\n");
+                //printf("statement -> if_st\n");
         }
         | read_st {
-                printf("statement -> read_st\n");
+                //printf("statement -> read_st\n");
         }
         | print_st {
-                printf("statement -> print_st\n");
+                //printf("statement -> print_st\n");
         }
         | assign_int_st {
-                printf("statement -> assign_int_st\n");
+                //printf("statement -> assign_int_st\n");
         } 
         | int_dec_st {
-                printf("statement -> int_dec_st\n");
+                //printf("statement -> int_dec_st\n");
         }
         | array_dec_st {
-                printf("statement -> array_dec_st\n");
+                //printf("statement -> array_dec_st\n");
         }
         | assign_array_st {
-                printf("statement -> assign_array_st\n");
+                //printf("statement -> assign_array_st\n");
         };
 
 exp_st: expression SEMICOLON {
-                printf("exp_st -> expression SEMICOLON\n");
+                //printf("exp_st -> expression SEMICOLON\n");
         };
 
 int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
-                printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");
+                //printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");
         };
 
 array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET assignment_dec SEMICOLON {
-                printf("array_dec_st -> INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET SEMICOLON\n");
+                //printf("array_dec_st -> INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET SEMICOLON\n");
         };
 
 assignment_dec: %empty {
-                printf("assignment_dec -> epsilon\n");
+                //printf("assignment_dec -> epsilon\n");
         }
         | ASSIGN add_exp {
-                printf("assignment_dec -> ASSIGN NUMBER\n");
+                //printf("assignment_dec -> ASSIGN NUMBER\n");
         };
 
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
-                printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
+                //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
         };
 
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
-                printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
+                //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
         };
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {
-                printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");
+                //printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");
         }
         | LEFT_CURLY RIGHT_CURLY {
-                printf("statement_block -> LEFT_CURLY RIGHT_CURLY\n");
+                //printf("statement_block -> LEFT_CURLY RIGHT_CURLY\n");
         };
 
 if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {
-                printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
+                //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
         };
 
 else_st: ELSE statement_block  {
-                printf("else_st -> ELSE statement_block\n");
+                //printf("else_st -> ELSE statement_block\n");
         }
         | ELSE if_st {
-                printf("else_st -> ELSE if_st\n");
+                //printf("else_st -> ELSE if_st\n");
         }
         | %empty {
-                printf("else_st -> epsilon\n");
+                //printf("else_st -> epsilon\n");
         };
 
 loop_st: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {
-                printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
+                //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
         };
 
 break_st: BREAK SEMICOLON {
-                printf("break_st -> BREAK SEMICOLON\n");
+                //printf("break_st -> BREAK SEMICOLON\n");
         };
 
 continue_st: CONTINUE SEMICOLON {
-                printf("continue_st -> CONTINUE SEMICOLON\n");
+                //printf("continue_st -> CONTINUE SEMICOLON\n");
         };
 
 return_st: RETURN return_exp SEMICOLON {
-                printf("return_st -> RETURN return_exp SEMICOLON\n");
+                //printf("return_st -> RETURN return_exp SEMICOLON\n");
         };
 
 return_exp: add_exp {
-                printf("return_exp -> add_exp\n");
+                //printf("return_exp -> add_exp\n");
         }
         | %empty {
-                printf("return_exp -> epsilon\n");
+                //printf("return_exp -> epsilon\n");
         };
 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
-                printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
+                //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
         };
 
 print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
-                printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
+                //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
         };
 %%
 // UNCOMMENT THIS!
