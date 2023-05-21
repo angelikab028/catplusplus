@@ -110,7 +110,7 @@ struct CodeNode {
 %}
 
 %union {
-  char *op_val;
+  char* op_val;
   struct CodeNode *node;
 }
 
@@ -171,6 +171,9 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 char *c = $3;
                 std::string function_identifier(c);
 
+                printf("What happened to my identifier... ");
+                printf(function_identifier.c_str());
+
                 // These lines get the arguments of the function. 
                 CodeNode *arg = $5;
                 node->code = function_identifier + arg->code;
@@ -181,7 +184,12 @@ function_identifier: IDENTIFIER {
                 //printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
                 std::string functionDeclaration = "func " + func_name + "\n";
-                char *c = &*functionDeclaration.begin(); // memory hack!
+                //char *c = &*functionDeclaration.begin();
+                int strLen = functionDeclaration.size();
+                char *c = new char[strLen + 1];
+                std::copy(functionDeclaration.begin(), functionDeclaration.end(), c);
+                c[strLen] = '\0';
+                printf("My identifier name is: %s", c);
                 add_function_to_symbol_table(func_name);
                 $$ = c;
         };
@@ -206,6 +214,39 @@ parametersprime: COMMA expression parametersprime {
 
 arguments: argument argumentsprime {
                 //printf("arguments -> argument argumentsprime\n");
+
+                // The "arguments" non-terminal contains all the declarations of the parameters, 
+                // taken from the synthesized attributes of argument and argumentsprime.
+                // We must generate the actual assignments.
+                
+                CodeNode *node = new CodeNode;
+                CodeNode *arg = $1;
+                CodeNode *argprime = $2;
+
+                // Extract the variable names from the generated code
+                std::string variableDeclarations = arg->code + argprime->code;
+                std::string variableAssignments = "";
+                std::stringstream ss(variableDeclarations);
+                std::ostringstream intConverter;
+                std::string currLine;
+                int currentRegister = 0;
+                
+                while (std::getline(ss, currLine))
+                {
+                        std::string currVar;
+                        if (currLine.substr(0, 2) == ". ")
+                        {
+                                currVar = currLine.substr(2);
+                        }
+                        intConverter << currentRegister++;
+                        variableAssignments += "= " + currVar + ", " + "$" + intConverter.str() + "\n";
+                        intConverter.str("");
+                        intConverter.clear();
+                }
+                
+                node->code = variableDeclarations + variableAssignments;
+                $$ = node;
+                
         }
         | %empty {
                 //printf("arguments -> epsilon\n");
@@ -219,16 +260,24 @@ arguments: argument argumentsprime {
 
 argumentsprime: COMMA argument argumentsprime {
                 //printf("argumentsprime -> COMMA arguments argumentsprime\n");
+
+                // Pass all arguments up.
+                CodeNode *node = $2;
+                $$ = node;
         }
         | %empty {
                 //printf("argumentsprime -> epsilon\n");
 
+                // No more arguments --> pass empty node
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 argument: INTEGER IDENTIFIER {
                 //printf("argument -> INTEGER IDENTIFIER\n");
                 
-                // Generates parameter declarations, and passes it upward.
+                // Generates argument declarations, and passes it upward.
                 CodeNode *node = new CodeNode;
                 std::string ident = $2;
                 std::string variableDeclaration = ". " + ident + "\n";
