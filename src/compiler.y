@@ -234,10 +234,6 @@ arguments: argument argumentsprime {
                         {
                                 currVar = currLine.substr(2);
                         }
-                        if (find(currVar, Integer))
-                        {
-
-                        }
                         intConverter << currentRegister++;
                         variableAssignments += "= " + currVar + ", " + "$" + intConverter.str() + "\n";
                         intConverter.str("");
@@ -280,7 +276,15 @@ argument: INTEGER IDENTIFIER {
                 // Generates argument declarations, and passes it upward.
                 CodeNode *node = new CodeNode;
                 std::string ident = $2;
-                add_variable_to_symbol_table(ident, Integer);
+                if (find(ident, Integer))
+                {
+                        std::string funcName = get_function()->name;
+                        std::string errorMsg = "In function \"" + funcName + "\": cannot have two arguments \"" + ident +  "\" with the same name";
+                        
+                        yyerror(errorMsg.c_str());
+                        
+                }
+                else add_variable_to_symbol_table(ident, Integer);
                 std::string variableDeclaration = ". " + ident + "\n";
                 node->code = variableDeclaration;
                 $$ = node;
@@ -503,7 +507,8 @@ int main(int argc, char* argv[]) {
 }
 
 void yyerror (char const *s) {
-   fprintf (stderr, "Error: On Line %d, column %d: %s at or near: \"%s\" \n", line_number, column_number, s, yytext);
+   fprintf (stderr, "Error: On Line %d, column %d, at or near: \"%s\": %s\n", line_number, column_number, yytext, s);
+   exit(1);
 }
 
 // Need to turn in: src/compiler.y
