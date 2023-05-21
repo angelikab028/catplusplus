@@ -184,12 +184,10 @@ function_identifier: IDENTIFIER {
                 //printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
                 std::string functionDeclaration = "func " + func_name + "\n";
-                //char *c = &*functionDeclaration.begin();
                 int strLen = functionDeclaration.size();
                 char *c = new char[strLen + 1];
                 std::copy(functionDeclaration.begin(), functionDeclaration.end(), c);
                 c[strLen] = '\0';
-                printf("My identifier name is: %s", c);
                 add_function_to_symbol_table(func_name);
                 $$ = c;
         };
