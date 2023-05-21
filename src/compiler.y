@@ -128,6 +128,7 @@ struct CodeNode {
 %type <node> statement
 %type <node> arguments
 %type <node> argument
+%type <node> argumentsprime
 
 %%
 prog_start: functions {
@@ -140,24 +141,37 @@ prog_start: functions {
         
 functions: function functions {
                 ////printf("function -> function functions\'\n");
+                
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
+                // Declare nodes for both nonterminals, and concatenate their code. Pass it up to the root.
                 CodeNode *func = $1;
-                //CodeNode *funcs = $2;
-                std::string code = func->code /*+ funcs->code*/;
+                CodeNode *funcs = $2;
+                std::string code = func->code + funcs->code;
                 CodeNode *node = new CodeNode;
                 node->code = code;
                 $$ = node;
          }
          | %empty {
-                ////printf("functions -> epsilon\n");
+                //printf("functions -> epsilon\n");
+
+                // If we have no more functions to add, pass up an empty node to prevent seg faulting.
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
          };
 
 function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 //printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
+                
+                // Declare a new node to be passed up the parse tree.
                 CodeNode *node = new CodeNode;
+
+                // These lines get the function_identifier from non-terminal 3 as a string, since function_identifier is an op_val.
                 char *c = $3;
                 std::string function_identifier(c);
+
+                // These lines get the arguments of the function. 
                 CodeNode *arg = $5;
                 node->code = function_identifier + arg->code;
                 $$ = node;
@@ -195,6 +209,12 @@ arguments: argument argumentsprime {
         }
         | %empty {
                 //printf("arguments -> epsilon\n");
+
+                // No more arguments --> pass empty node
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
+                
         };
 
 argumentsprime: COMMA argument argumentsprime {
@@ -202,12 +222,14 @@ argumentsprime: COMMA argument argumentsprime {
         }
         | %empty {
                 //printf("argumentsprime -> epsilon\n");
+
         };
 
 argument: INTEGER IDENTIFIER {
                 //printf("argument -> INTEGER IDENTIFIER\n");
+                
+                // Generates parameter declarations, and passes it upward.
                 CodeNode *node = new CodeNode;
-                // todo: generate parameter code, pass it up. how to keep track of multiple parameters?
                 std::string ident = $2;
                 std::string variableDeclaration = ". " + ident + "\n";
                 node->code = variableDeclaration;
