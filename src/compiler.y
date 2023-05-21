@@ -103,6 +103,9 @@ std::string create_temp() {
         return value;
 }
 
+// TODO: Create a bool function that returns whether or not a function is in the symbol table
+// Parameter: std::string of function name.
+
 struct CodeNode {
     std::string code; // generated code as a string.
     std::string name;
@@ -282,7 +285,7 @@ argument: INTEGER IDENTIFIER {
                 if (find(ident, Integer))
                 {
                         std::string funcName = get_function()->name;
-                        std::string errorMsg = "In function \"" + funcName + "\": cannot have multiple arguments \"" + ident +  "\" with the same name";
+                        std::string errorMsg = "In function \"" + funcName + "\": cannot have multiple arguments with the same name \"" + ident + "\"";
                         
                         yyerror(errorMsg.c_str());
                         
@@ -483,6 +486,9 @@ exp_st: expression SEMICOLON {
 
 int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
                 //printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");
+
+                std::string varName = $2;
+                CodeNode *assignment = $3;
         };
 
 array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET assignment_dec SEMICOLON {
@@ -562,13 +568,13 @@ int main(int argc, char* argv[]) {
             yyin = fopen( argv[0], "r" );
     else
             yyin = stdin;
-    printf("Ctrl + D to quit\n");
+    printf("Ctrl + D to quit\n\n");
     // yylex();
     yyparse();
 }
 
 void yyerror (char const *s) {
-   fprintf (stderr, "Error: On Line %d, column %d, at or near: \"%s\": %s\n", line_number, column_number, yytext, s);
+   fprintf (stderr, "ERROR: On Line %d, column %d, at or near \"%s\"\n\t %s\n", line_number, column_number, yytext, s);
    yyclearin;
    //exit(1);
 }
