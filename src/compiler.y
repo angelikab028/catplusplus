@@ -117,19 +117,9 @@ struct CodeNode {
 %define parse.error verbose
 %start prog_start
 %token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS
-%token <op_val> NUMBER
-%token <op_val> IDENTIFIER
-%type <op_val> symbol
-%type <op_val> function_identifier
-%type <node> prog_start
-%type <node> functions
-%type <node> function
-%type <node> statements
-%type <node> statement
-%type <node> statementsprime
-%type <node> arguments
-%type <node> argument
-%type <node> argumentsprime
+%token <op_val> NUMBER IDENTIFIER
+%type <op_val> symbol function_identifier
+%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
 
 %%
 prog_start: functions {
@@ -363,10 +353,12 @@ array_element: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
     
 symbol: NUMBER {
             //printf("symbol -> NUMBER\n");
+            $$ = $1;
         }
         |
         IDENTIFIER {
             //printf("symbol -> IDENTIFIER\n");
+            $$ = $1;
         };
 
 statements: statement statementsprime {
@@ -483,9 +475,6 @@ return_st: RETURN return_exp SEMICOLON {
 
 return_exp: add_exp {
                 //printf("return_exp -> add_exp\n");
-        }
-        | %empty {
-                //printf("return_exp -> epsilon\n");
         };
 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
@@ -512,7 +501,8 @@ int main(int argc, char* argv[]) {
 
 void yyerror (char const *s) {
    fprintf (stderr, "Error: On Line %d, column %d, at or near: \"%s\": %s\n", line_number, column_number, yytext, s);
-   exit(1);
+   yyclearin;
+   //exit(1);
 }
 
 // Need to turn in: src/compiler.y
