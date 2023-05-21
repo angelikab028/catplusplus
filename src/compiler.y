@@ -126,6 +126,7 @@ struct CodeNode {
 %type <node> function
 %type <node> statements
 %type <node> statement
+%type <node> statementsprime
 %type <node> arguments
 %type <node> argument
 %type <node> argumentsprime
@@ -287,7 +288,7 @@ argument: INTEGER IDENTIFIER {
                         yyerror(errorMsg.c_str());
                         
                 }
-                else add_variable_to_symbol_table(ident, Integer);
+                add_variable_to_symbol_table(ident, Integer);
                 std::string variableDeclaration = ". " + ident + "\n";
                 node->code = variableDeclaration;
                 $$ = node;
