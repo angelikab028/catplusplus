@@ -166,17 +166,26 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 // These lines get the arguments of the function. 
                 CodeNode *arg = $5;
                 node->code = function_identifier + arg->code;
+
+                // These lines get the body of the function.
+                // CodeNode *body = $7;
+                // node->code += body->code;
+
                 $$ = node;
         };
 
 function_identifier: IDENTIFIER {
                 //printf("function_identifier -> IDENTIFIER\n");
                 std::string func_name = $1;
+
+                // Convert from std::string to c type string.
+                // This was before we knew c_str() was a function
                 std::string functionDeclaration = "func " + func_name + "\n";
                 int strLen = functionDeclaration.size();
                 char *c = new char[strLen + 1];
                 std::copy(functionDeclaration.begin(), functionDeclaration.end(), c);
                 c[strLen] = '\0';
+
                 add_function_to_symbol_table(func_name);
                 $$ = c;
         };
@@ -363,13 +372,36 @@ symbol: NUMBER {
 
 statements: statement statementsprime {
                 //printf("statements -> statement statementsprime\n");
+
+                // Same idea with arguments and functions: the "statements" non-terminal will
+                // contain all the code within it's scope, since each line is being passed up from the leaf node
+                // that it was synthesized from.
+                CodeNode *statement = $1;
+                CodeNode *statementsprime = $2;
+                std::string code = statement->code + statementsprime->code;
+                CodeNode *node = new CodeNode;
+                node->code = code;
+                $$ = node;
         };
 
 statementsprime: %empty {
                 //printf("statementsprime -> epsilon\n");
+
+                // Empty rule that returns a node: make sure to actually return empty.
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | statement statementsprime {
                 //printf("statementsprime -> statement statementsprime\n");
+
+                // Simply pass upward to "statements": this rule just builds statements one by one.
+                CodeNode *statement = $1;
+                CodeNode *statementsprime = $2;
+                std::string code = statement->code + statementsprime->code;
+                CodeNode *node = new CodeNode;
+                node->code = code;
+                $$ = node;
         };
 
 statement: exp_st {
