@@ -131,23 +131,23 @@ struct CodeNode {
 
 %%
 prog_start: functions {
-                ////printf("prog_start -> functions\n");
-                //CodeNode *node = $1;
-                //std::string code = node->code;
-                ////printf("Generated Code:\n");
-                ////printf("%s\n", code.c_str());
+                printf("prog_start -> functions\n");
+                CodeNode *node = $1;
+                std::string code = node->code;
+                printf("Generated Code:\n");
+                printf("%s\n", code.c_str());
         };
         
 functions: function functions {
                 ////printf("function -> function functions\'\n");
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
-                //CodeNode *func = $1;
+                CodeNode *func = $1;
                 //CodeNode *funcs = $2;
-                //std::string code = func->code + funcs->code;
-                //CodeNode *node = new CodeNode;
-                //node->code = code;
-                //$$ = node;
+                std::string code = func->code /*+ funcs->code*/;
+                CodeNode *node = new CodeNode;
+                node->code = code;
+                $$ = node;
          }
          | %empty {
                 ////printf("functions -> epsilon\n");
@@ -155,6 +155,9 @@ functions: function functions {
 
 function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 //printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
+                CodeNode *node = new CodeNode;
+                node = $5;
+                $$ = node;
         };
 
 function_identifier: IDENTIFIER {
@@ -197,10 +200,12 @@ argumentsprime: COMMA argument argumentsprime {
         };
 
 argument: INTEGER IDENTIFIER {
-                ////printf("argument -> INTEGER IDENTIFIER\n");
+                //printf("argument -> INTEGER IDENTIFIER\n");
                 CodeNode *node = new CodeNode;
-                // todo: generate parameter code, pass it up
+                // todo: generate parameter code, pass it up. how to keep track of multiple parameters?
                 std::string ident = $2;
+                std::string variableDeclaration = ". " + ident + "\n";
+                node->code = variableDeclaration;
                 $$ = node;
         };
 
