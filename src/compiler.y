@@ -211,7 +211,7 @@ parametersprime: COMMA expression parametersprime {
 arguments: argument argumentsprime {
                 //printf("arguments -> argument argumentsprime\n");
 
-                // The "arguments" non-terminal contains all the declarations of the parameters, 
+                // The "arguments" non-terminal contains all the declarations of the arguments, 
                 // taken from the synthesized attributes of argument and argumentsprime.
                 // We must generate the actual assignments.
                 
@@ -222,10 +222,13 @@ arguments: argument argumentsprime {
                 // Extract the variable names from the generated code
                 std::string variableDeclarations = arg->code + argprime->code;
                 std::string variableAssignments = "";
+
+                // Iterate through the generated code of the argument declarations.
+                // Generate the assignments to those arguments, concatenate them to the declarations, and return.
                 std::stringstream ss(variableDeclarations);
                 std::ostringstream intConverter;
                 std::string currLine;
-                int currentRegister = 0;
+                int currentParam = 0;
                 
                 while (std::getline(ss, currLine))
                 {
@@ -234,7 +237,7 @@ arguments: argument argumentsprime {
                         {
                                 currVar = currLine.substr(2);
                         }
-                        intConverter << currentRegister++;
+                        intConverter << currentParam++;
                         variableAssignments += "= " + currVar + ", " + "$" + intConverter.str() + "\n";
                         intConverter.str("");
                         intConverter.clear();
@@ -279,7 +282,7 @@ argument: INTEGER IDENTIFIER {
                 if (find(ident, Integer))
                 {
                         std::string funcName = get_function()->name;
-                        std::string errorMsg = "In function \"" + funcName + "\": cannot have two arguments \"" + ident +  "\" with the same name";
+                        std::string errorMsg = "In function \"" + funcName + "\": cannot have multiple arguments \"" + ident +  "\" with the same name";
                         
                         yyerror(errorMsg.c_str());
                         
