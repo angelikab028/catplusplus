@@ -112,6 +112,7 @@ struct CodeNode {
 };
 %}
 
+// TODO: Potentially add another type for mathematical expression such that we can keep track of their type.
 %union {
   char* op_val;
   struct CodeNode *node;
@@ -171,8 +172,8 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 node->code = function_identifier + arg->code;
 
                 // These lines get the body of the function.
-                // CodeNode *body = $7;
-                // node->code += body->code;
+                CodeNode *body = $7;
+                node->code += body->code;
 
                 $$ = node;
         };
@@ -464,7 +465,7 @@ statement: exp_st {
         | int_dec_st {
                 //printf("statement -> int_dec_st\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code;
                 $$ = node;
         }
         | array_dec_st {
@@ -487,8 +488,22 @@ exp_st: expression SEMICOLON {
 int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
                 //printf("int_dec_st -> INTEGER IDENTIFIER assignment_dec SEMICOLON\n");
 
-                std::string varName = $2;
+                std::string ident = $2;
                 CodeNode *assignment = $3;
+                CodeNode *node = new CodeNode;
+
+                // TODO: Error check and add to symbol table.
+
+                std::string variableDeclaration = ". " + ident + "\n";
+                node->code = variableDeclaration;
+
+                // If the variable is initialized with a value
+                if (!assignment->code.empty())
+                {
+                        node->code += assignment->code;
+                }
+
+                $$ = node;
         };
 
 array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET assignment_dec SEMICOLON {
@@ -497,6 +512,9 @@ array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKE
 
 assignment_dec: %empty {
                 //printf("assignment_dec -> epsilon\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | ASSIGN add_exp {
                 //printf("assignment_dec -> ASSIGN NUMBER\n");
@@ -512,9 +530,13 @@ assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET ASS
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {
                 //printf("statement_block -> LEFT_CURLY statements RIGHT_CURLY\n");
+                $$ = $2;
         }
         | LEFT_CURLY RIGHT_CURLY {
                 //printf("statement_block -> LEFT_CURLY RIGHT_CURLY\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {
@@ -574,7 +596,7 @@ int main(int argc, char* argv[]) {
 }
 
 void yyerror (char const *s) {
-   fprintf (stderr, "ERROR: On Line %d, column %d, at or near \"%s\"\n\t %s\n", line_number, column_number, yytext, s);
+   fprintf (stderr, "*** ERROR: On Line %d, column %d, at or near \"%s\"\n\t %s\n", line_number, column_number, yytext, s);
    yyclearin;
    //exit(1);
 }
