@@ -682,8 +682,8 @@ continue_st: CONTINUE SEMICOLON {
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                CodeNode *ret = new CodeNode;
-                node->code = std::string("ret ") + ret->code + std::string("\n");
+                node->code = $2->code;
+                node->code = std::string("ret ") + $2->name + std::string("\n");
                 $$ = node;
         };
 // TODO:
@@ -698,6 +698,7 @@ read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
+                node->code = declare_temp_code(temp);
                 node->code += ".<" + temp + "\n";
                 $$ = node;
         };
