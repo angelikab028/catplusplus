@@ -132,7 +132,7 @@ struct CodeNode {
 
 %%
 prog_start: functions {
-                printf("prog_start -> functions\n");
+                // printf("prog_start -> functions\n");
                 CodeNode *node = $1;
                 std::string code = node->code;
                 printf("Generated Code:\n");
@@ -141,7 +141,7 @@ prog_start: functions {
         };
         
 functions: function functions {
-                ////printf("function -> function functions\'\n");
+                // printf("function -> function functions\'\n");
                 
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
@@ -394,8 +394,10 @@ primary_exp: NUMBER {
                 //printf("primary_exp -> symbol\n");
                 CodeNode *node = new CodeNode;
                 std::string symbol($1);
-                node->name = symbol;
-                node->code = "";
+                std::string temp = create_temp();
+                node->name = temp;
+                temp = declare_temp_code(temp); 
+                node->code = temp + "= " + node->name + ", " + symbol + "\n";
                 $$ = node;
         }
         | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {
@@ -411,9 +413,15 @@ primary_exp: NUMBER {
                 $$ = $1;
         }
         | IDENTIFIER {
-                // TODO: Error check for no declaration
                 CodeNode *node = new CodeNode;
                 std::string symbol($1);
+                if (!find(symbol, Integer) && !find(symbol, Array))
+                {
+                        std::string funcName = get_function()->name;
+                        std::string errorMsg = "In function \"" + funcName + "\": use of unknown variable \"" + symbol + "\"" + " before declaration.";
+                        
+                        yyerror(errorMsg.c_str());
+                }
                 node->name = symbol;
                 $$ = node;
         };

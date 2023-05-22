@@ -5,6 +5,8 @@ int line_number = 1;
 int column_number  = 0;
 extern char *identToken;
 extern int numberToken;
+void yyerror(char const *msg);
+
 %}
 
 DIGIT [0-9]
@@ -242,7 +244,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 {INVALIDIDENTIFIER} {
         printf("INVALID IDENTIFIER ERROR (CANNOT BEGIN WITH NUMBER) AT LINE %d, COLUMN %d: %s\n", line_number, column_number, yytext);
-        exit(1);
+        // exit(1);
 }
 
 {COMMENT} {
@@ -261,7 +263,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 . { 
         printf("UNRECOGNIZED SYMBOL ERROR AT LINE %d, COLUMN %d: %s\n", line_number, column_number, yytext);
-        exit(1); 
+        // exit(1); 
 }
 %%
 // Remove main, move to Bison
