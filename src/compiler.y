@@ -199,10 +199,12 @@ function_identifier: IDENTIFIER {
                 $$ = c;
         };
 
+// TODO:
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
                 //printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");
         };
 
+// TODO:
 parameters: expression parametersprime {
                 //printf("parameters -> IDENTIFIER parametersprime\n");
         }
@@ -210,6 +212,7 @@ parameters: expression parametersprime {
                 //printf("parameters -> epsilon\n");
         };
 
+// TODO:
 parametersprime: COMMA expression parametersprime {
                 //printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");
         }
@@ -365,6 +368,8 @@ add_exp: mult_exp {
                 $$ = node;
         };
 
+
+// TODO: 
 mult_exp: unary_exp {
                 //printf("mult_exp -> unary_exp\n");
                 $$ = $1;
@@ -429,6 +434,7 @@ primary_exp: NUMBER {
                 $$ = node;
         };
 
+// TODO:
 array_element: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET {
         //printf("array_element -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
                 CodeNode *node = new CodeNode;
@@ -567,6 +573,7 @@ int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
                 $$ = node;
         };
 
+// TODO:
 array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET assignment_dec SEMICOLON {
                 //printf("array_dec_st -> INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET SEMICOLON\n");
         };
@@ -588,6 +595,7 @@ assignment_dec: %empty {
                 $$ = node;
         };
 
+// TODO:
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
                 CodeNode *node = new CodeNode;
@@ -595,6 +603,7 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 $$ = node;
         };
 
+// TODO:
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
@@ -660,27 +669,28 @@ continue_st: CONTINUE SEMICOLON {
                 $$ = node;
         };
 
+// TODO:
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         };
-
+// TODO:
 return_exp: add_exp {
                 //printf("return_exp -> add_exp\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         };
-
+// TODO: 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         };
-
+// TODO:
 print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 CodeNode *node = new CodeNode;
