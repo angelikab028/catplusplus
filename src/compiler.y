@@ -459,7 +459,7 @@ primary_exp: NUMBER {
                 $$ = $1;
         }
         | function_call {
-                printf("primary_exp -> function_call\n");
+                // printf("primary_exp -> function_call\n");
                 $$ = $1;
         }
         | IDENTIFIER {
