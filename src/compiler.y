@@ -147,9 +147,9 @@ prog_start: functions {
                 }
                 CodeNode *node = $1;
                 std::string code = node->code;
-                printf("Generated Code:\n");
+                //printf("Generated Code:\n");
                 printf("%s\n", code.c_str());
-                print_symbol_table();
+                //print_symbol_table();
         };
         
 functions: function functions {
@@ -546,7 +546,7 @@ array_element: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET {
         node->name = temp;
         temp = declare_temp_code(temp); 
         std::string array_name = $1;
-        node->code = ".[] " + array_name + ", " + symbol + "\n";
+        node->code = temp + ".[] " + array_name + ", " + symbol + "\n";
         $$ = node;
 };
 
@@ -742,19 +742,18 @@ Array Access Statements
 // done :3 []= dst, index, src	dst[index] = src (index and src can be immediates)
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
-                std::string array_name = $1;
+                std::string array_name($1);
                 if (!find(array_name, Array)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function " + funcName + ", array " + array_name + " does not exist in the symbol table.";
                         yyerror(error_message.c_str());
                 }
                 // TODO: Add second type of array access
-                // TODO: Fix issue with temp declarations not being printed
                 std::string temp = create_temp();
                 std::string temp2 = declare_temp_code(temp);
                 CodeNode* node = new CodeNode;
-                std::string symbol = $1;                       
-                std::string index = $3;                      
+                std::string symbol($1);                       
+                std::string index($3);                      
                 CodeNode* src = $6;                            
                 node->name = temp;
                 node->code = src->code + temp2 + "[]= " + array_name + ", " + index + ", " + src->name + "\n";  
@@ -848,7 +847,7 @@ read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = declare_temp_code(temp);
+                node->code = $3->code + declare_temp_code(temp);
                 node->code += ".< " + temp + "\n";
                 node->name = temp;
                 $$ = node;
@@ -857,8 +856,7 @@ read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
 print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = $3->code;
-                node->code += ".> " + $3->name + "\n";
+                node->code = $3->code + ".> " + $3->name + "\n";
                 $$ = node; 
                 
         };
@@ -872,7 +870,7 @@ int main(int argc, char* argv[]) {
             yyin = fopen( argv[0], "r" );
     else
             yyin = stdin;
-    printf("Ctrl + D to quit\n\n");
+    //printf("Ctrl + D to quit\n\n");
     // yylex();
     yyparse();
 }
