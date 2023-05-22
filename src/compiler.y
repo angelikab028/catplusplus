@@ -98,7 +98,7 @@ std::string create_temp() {
         static int num = 0;
         std::ostringstream ss;
         ss << num;
-        std::string value = "_temp" + ss.str();
+        std::string value = "temp" + ss.str();
         num += 1;
         return value;
 }
@@ -299,69 +299,127 @@ argument: INTEGER IDENTIFIER {
 
 expression: cond_exp {
                 //printf("expression -> cond_exp\n");
+                $$ = $1;
         };
 
 cond_exp: add_exp {
                 //printf("cond_exp -> add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | cond_exp LESSTHAN add_exp {
                 //printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | cond_exp GREATERTHAN add_exp {
                 //printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | cond_exp GREATOREQUALS add_exp {
                 //printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | cond_exp LESSOREQUALS add_exp {
                 //printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | cond_exp EQUALS add_exp {
                 //printf("cond_exp -> cond_exp EQUALS add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 add_exp: mult_exp {
                 //printf("add_exp -> mult_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         } 
         | add_exp ADD mult_exp {
                 //printf("add_exp -> add_exp ADD mult_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         } 
         | add_exp SUB mult_exp {
                 //printf("add_exp -> add_exp SUB mult_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 mult_exp: unary_exp {
                 //printf("mult_exp -> unary_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | mult_exp MULT unary_exp {
                 //printf("mult_exp -> mult_exp MULT unary_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | mult_exp DIV unary_exp {
                 //printf("mult_exp -> mult_exp DIV unary_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | mult_exp MOD unary_exp {
                 //printf("mult_exp -> mult_exp MOD unary_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 unary_exp: primary_exp {
                 //printf("unary_exp -> primary_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 primary_exp: symbol {
                 //printf("primary_exp -> symbol\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {
                 //printf("primary_exp -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | array_element {
                 //printf("primary_exp -> array_element\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | function_call {
                 //printf("primary_exp -> function_call\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 array_element: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET {
         //printf("array_element -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
+        CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
 };
     
 symbol: NUMBER {
@@ -483,6 +541,7 @@ statement: exp_st {
 
 exp_st: expression SEMICOLON {
                 //printf("exp_st -> expression SEMICOLON\n");
+                $$ = $1;
         };
 
 int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
@@ -527,14 +586,39 @@ assignment_dec: %empty {
         }
         | ASSIGN add_exp {
                 //printf("assignment_dec -> ASSIGN NUMBER\n");
+                std::string expCode = $2->code;
+
+                // Explanation: possible cases for add_exp:
+                // Applies to Case 1:
+                // #
+                // identifier
+                // No need for temp variable here.
+
+                // Applies to Case 2:
+                // # op identifier
+                // # op #
+                // var op var
+                // In this case, we need a temp variable to calculate the result, then assign it to the var.
+                
+                // This is case 2
+                if (expCode.find_first_of("+-*/%") != std::string::npos) 
+                {
+                        // TODO: finish this
+                }
         };
 
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {
@@ -550,44 +634,77 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
 
 if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {
                 //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 else_st: ELSE statement_block  {
                 //printf("else_st -> ELSE statement_block\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | ELSE if_st {
                 //printf("else_st -> ELSE if_st\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         }
         | %empty {
                 //printf("else_st -> epsilon\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 loop_st: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 break_st: BREAK SEMICOLON {
                 //printf("break_st -> BREAK SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 continue_st: CONTINUE SEMICOLON {
                 //printf("continue_st -> CONTINUE SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 return_exp: add_exp {
                 //printf("return_exp -> add_exp\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 %%
 // UNCOMMENT THIS!
