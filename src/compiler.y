@@ -476,12 +476,17 @@ primary_exp: NUMBER {
                 $$ = node;
         };
 
-// TODO:
+// done :3 
 array_element: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET {
         //printf("array_element -> IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET\n");
-                CodeNode *node = new CodeNode;
-                node->code = "";
-                $$ = node;
+        CodeNode *node = new CodeNode;
+        std::string symbol($3);
+        std::string temp = create_temp();
+        node->name = temp;
+        temp = declare_temp_code(temp); 
+        std::string array_name = $1;
+        node->code = ".[] " + array_name + ", " + symbol + "\n";
+        $$ = node;
 };
     
     /*
@@ -615,9 +620,34 @@ int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
                 $$ = node;
         };
 
-// TODO:
-array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET add_exp RIGHT_SQUARE_BRACKET assignment_dec SEMICOLON {
+// done :3 .[] name, n	declares a name for an array variable consisting of n (must be a positive whole number) elements, with name[0] being the first element
+array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET SEMICOLON {
                 //printf("array_dec_st -> INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET SEMICOLON\n");
+                std::string temp = create_temp();
+                CodeNode *node = new CodeNode;
+                std::string symbol($4);
+                node->name = temp;
+                temp = declare_temp_code(temp); 
+                std::string array_name = $2;
+                //need to make error message where array size cannot be less than 1 :P
+                int index = 0;
+                std::stringstream ss($4);
+                ss >> index;
+                if (index < 1) {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "Error in function: " + funcName + ", index must be a positive whole number.";
+                        yyerror(error_message.c_str());    
+                }
+                
+                //one that already exists
+                if (find(array_name, Array)) {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "Error in function: " + funcName + ", array " + array_name + " already exists in the symbol table.";
+                        yyerror(error_message.c_str());
+                }
+                add_variable_to_symbol_table(array_name, Array);
+                node->code = ".[] " + array_name + ", " + symbol + "\n";
+                $$ = node;
         };
 
 assignment_dec: %empty {
@@ -637,20 +667,43 @@ assignment_dec: %empty {
                 $$ = node;
         };
 
-// TODO:
+// done :3 = dst, src	dst = src (src can be an immediate)
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                CodeNode *numba = $3;
+                std::string int_name = $1;
+                node->code = numba->code + "= " + int_name + ", " + numba->name + "\n";
                 $$ = node;
+
+                //error message assigning a variable that is not in symbo table
+                if (find(int_name, Integer)) {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "Error in function: " + funcName + ", int variable " + int_name + " already exists in the symbol table.";
+                        yyerror(error_message.c_str());
+                }
         };
 
-// TODO:
+// done :3 []= dst, index, src	dst[index] = src (index and src can be immediates)
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
-                CodeNode *node = new CodeNode;
-                node->code = "";
+                std::string temp = create_temp();
+                std::string temp2 = declare_temp_code(temp);
+                CodeNode* node = new CodeNode;
+                std::string symbol = $1;                       
+                std::string index = $3;                      
+                CodeNode* src = $6;                            
+                std::string array_name = $1;
+                node->name = temp;
+                node->code = src->code + temp2 + "[]= " + array_name + ", " + index + ", " + src->name + "\n";  
                 $$ = node;
+
+                //array that instn int he scymbol table
+                if (!find(array_name, Array)) {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "Error in function: " + funcName + ", array " + array_name + " does not exist in the symbol table.";
+                        yyerror(error_message.c_str());
+                }
         };
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {
