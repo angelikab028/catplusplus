@@ -29,9 +29,6 @@ Features of Cat++
 | `neuter` | BREAK |
 | `keep_going` | CONTINUE |
 | `purrhaps` | IF |
-| `fur` | FOR |
-| `furreal` | TRUE |
-| `hiss` | FALSE |
 | `O_O` | COMMENT |
 | `scratch` | PRINT |
 | `litter` | READ |

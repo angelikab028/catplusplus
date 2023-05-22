@@ -827,9 +827,6 @@ return_st: RETURN return_exp SEMICOLON {
         };
 // CHECK /// 
 return_exp: add_exp {
-                //printf("return_exp -> add_exp\n");
-                // CodeNode *node = new CodeNode;
-                // node->code = std::string("ret ") + $1->code + std::string("\n");
                 $$ = $1;
         };
 
@@ -876,7 +873,7 @@ int main(int argc, char* argv[]) {
 
 void yyerror (char const *s) {
    fprintf (stderr, "*** ERROR: On Line %d, column %d, at or near \"%s\"\n\t %s\n", line_number, column_number, yytext, s);
-   yyclearin;
+   yyclearin; // allows for continued parsing after error
    //exit(1);
 }
 
