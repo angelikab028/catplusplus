@@ -135,7 +135,7 @@ struct CodeNode {
 %start prog_start
 %token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS VOID
 %token <op_val> NUMBER IDENTIFIER
-%type <op_val> function_identifier function_return_type
+%type <op_val> function_identifier function_return_type add_to_symbol_table
 %type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
 
 %%
@@ -170,27 +170,22 @@ functions: function functions {
                 $$ = node;
          };
 
-function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
+function: FUNCTION add_to_symbol_table LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 //printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
                 
                 // Declare a new node to be passed up the parse tree.
                 CodeNode *node = new CodeNode;
 
-                char *returnType = $2;
-                std::string ret(returnType);
-
                 // These lines get the function_identifier from non-terminal 3 as a string, since function_identifier is an op_val.
-                char *c = $3;
+                char *c = $2;
                 std::string function_identifier(c);
 
-                // TODO: Add function to symbol table here instead so we can pass in both return type and identifier. Also, error check for a function with the same name + return type.
-
                 // These lines get the arguments of the function. 
-                CodeNode *arg = $5;
+                CodeNode *arg = $4;
                 node->code = function_identifier + arg->code;
 
                 // These lines get the body of the function.
-                CodeNode *body = $7;
+                CodeNode *body = $6;
                 node->code += body->code;
                 
                 
@@ -205,11 +200,40 @@ function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arg
                 $$ = node;
         };
 
-function_return_type: INTEGER {
+add_to_symbol_table: function_return_type function_identifier {
+                char *returnType = $1;
+                std::string ret(returnType);
 
+                // These lines get the function_identifier from non-terminal 3 as a string, since function_identifier is an op_val.
+                char *c = $2;
+                std::string function_identifier(c);
+
+                if (ret == "Void")
+                {
+                        add_function_to_symbol_table(function_identifier, Void);
+                }
+                else
+                {
+                        add_function_to_symbol_table(function_identifier, Integer);
+                }
+                $$ = $2;
+        };
+
+function_return_type: INTEGER {
+                std::string intgr = "Integer";
+                int strLen = intgr.size();
+                char *c = new char[strLen + 1];
+                std::copy(intgr.begin(), intgr.end(), c);
+                c[strLen] = '\0';
+                $$ = c;
         }
         | VOID {
-
+                std::string vd = "Void";
+                int strLen = vd.size();
+                char *c = new char[strLen + 1];
+                std::copy(vd.begin(), vd.end(), c);
+                c[strLen] = '\0';
+                $$ = c;
         };
 
 function_identifier: IDENTIFIER {
@@ -224,7 +248,7 @@ function_identifier: IDENTIFIER {
                 std::copy(functionDeclaration.begin(), functionDeclaration.end(), c);
                 c[strLen] = '\0';
 
-                add_function_to_symbol_table(func_name);
+                //add_function_to_symbol_table(func_name);
                 $$ = c;
         };
 
@@ -728,8 +752,6 @@ assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSI
                 node->name = temp;
                 node->code = src->code + temp2 + "[]= " + array_name + ", " + index + ", " + src->name + "\n";  
                 $$ = node;
-
-                //array that instn int he scymbol table
                 
         };
 
