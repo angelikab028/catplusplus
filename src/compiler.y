@@ -357,8 +357,11 @@ add_exp: mult_exp {
         } 
         | add_exp SUB mult_exp {
                 //printf("add_exp -> add_exp SUB mult_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "- " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         };
 
