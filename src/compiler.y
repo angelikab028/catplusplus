@@ -705,7 +705,7 @@ read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
 print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = $3->code + declare_temp_code(temp);
+                node->code = $3->code;
                 node->code += ".<" + $3->name + "\n";
                 $$ = node; 
                 
