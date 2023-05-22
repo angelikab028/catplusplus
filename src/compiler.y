@@ -17,7 +17,7 @@ char *identToken;
 int numberToken;
 int  count_names = 0;
 
-enum Type { Integer, Array };
+enum Type { Integer, Array, Void };
 
 struct Symbol {
   std::string name;
@@ -26,6 +26,7 @@ struct Symbol {
 
 struct Function {
   std::string name;
+  Type returnType;
   std::vector<Symbol> declarations;
 };
 
@@ -62,9 +63,10 @@ bool find(std::string &value, Type t) {
 
 // when you see a function declaration inside the grammar, add
 // the function name to the symbol table
-void add_function_to_symbol_table(std::string &value) {
+void add_function_to_symbol_table(std::string &value, Type returnType) {
   Function f; 
-  f.name = value; 
+  f.name = value;
+  f.returnType = returnType;
   symbol_table.push_back(f);
 }
 
@@ -131,9 +133,9 @@ struct CodeNode {
 
 %define parse.error verbose
 %start prog_start
-%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS
+%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS VOID
 %token <op_val> NUMBER IDENTIFIER
-%type <op_val> function_identifier
+%type <op_val> function_identifier function_return_type
 %type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
 
 %%
@@ -168,15 +170,20 @@ functions: function functions {
                 $$ = node;
          };
 
-function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
+function: FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block {
                 //printf("function -> FUNCTION function_return_type function_identifier LEFT_PARENTHESIS arguments RIGHT_PARENTHESIS statement_block\n");
                 
                 // Declare a new node to be passed up the parse tree.
                 CodeNode *node = new CodeNode;
 
+                char *returnType = $2;
+                std::string ret(returnType);
+
                 // These lines get the function_identifier from non-terminal 3 as a string, since function_identifier is an op_val.
                 char *c = $3;
                 std::string function_identifier(c);
+
+                // TODO: Add function to symbol table here instead so we can pass in both return type and identifier. Also, error check for a function with the same name + return type.
 
                 // These lines get the arguments of the function. 
                 CodeNode *arg = $5;
@@ -187,7 +194,7 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 node->code += body->code;
                 
                 
-                if (node->code.find("ret") == std::string::npos)
+                if (node->code.find("ret") == std::string::npos && get_function()->returnType == Integer)
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In function \"" + funcName + "\": no return statement in function returning integer";
@@ -196,6 +203,13 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 }
                 node->code += "endfunc\n";
                 $$ = node;
+        };
+
+function_return_type: INTEGER {
+
+        }
+        | VOID {
+
         };
 
 function_identifier: IDENTIFIER {

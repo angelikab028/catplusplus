@@ -25,6 +25,7 @@ SEMICOLON ":3"
 BREAK "neuter"
 CONTINUE "keep_going"
 IF "purrhaps"
+VOID "hairball"
 COMMENT "O_O"([ \t]?.)*
 PRINT "scratch"
 READ "litter"
@@ -104,6 +105,11 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         // printf("TOKEN READ: %s\n", yytext);
         column_number += yyleng;
         return READ;
+}
+
+{VOID} {
+        column_number += yyleng;
+        return VOID;
 }
 
 {RETURN} {
