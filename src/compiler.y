@@ -550,18 +550,6 @@ array_element: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET {
         node->code = ".[] " + array_name + ", " + symbol + "\n";
         $$ = node;
 };
-    
-    /*
-symbol: NUMBER {
-            //printf("symbol -> NUMBER\n");
-            $$ = $1;
-        }
-        |
-        IDENTIFIER {
-            //printf("symbol -> IDENTIFIER\n");
-            $$ = $1;
-        };
-*/
 
 statements: statement statementsprime {
                 //printf("statements -> statement statementsprime\n");
