@@ -15,7 +15,7 @@ extern int yylex(void);
 
 char *identToken;
 int numberToken;
-int  count_names = 0;
+int count_names = 0;
 
 enum Type { Integer, Array, Void };
 
@@ -109,7 +109,6 @@ std::string declare_temp_code(std::string &temp) {
         return std::string(". ") + temp + std::string("\n");
 }
 
-// Pass by value, because we don't want to actually append the newline to the string.
 bool findFunction(std::string& name, Type returnType)
 {
         for (int i = 0; i < symbol_table.size(); i++)
@@ -732,6 +731,13 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                         yyerror(error_message.c_str());
                 }
         };
+/*
+
+Array Access Statements
+=[] dst, src, index	dst = src[index] (index can be an immediate)
+[]= dst, index, src	dst[index] = src (index and src can be immediates)
+
+*/
 
 // done :3 []= dst, index, src	dst[index] = src (index and src can be immediates)
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
@@ -828,6 +834,15 @@ return_exp: add_exp {
                 // node->code = std::string("ret ") + $1->code + std::string("\n");
                 $$ = $1;
         };
+
+/*
+Input/Output Statements
+.< dst	read a value into dst from standard in
+.[]< dst, index	read a value into dst[index] from standard in
+.> src	write the value of src into standard out
+.[]> src, index	write the value of src[index] into standard out
+*/
+
 // TODO: Implement array printing and reading from stdin
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
