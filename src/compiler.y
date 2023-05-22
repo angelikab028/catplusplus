@@ -700,14 +700,14 @@ array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET
                 ss >> index;
                 if (index < 1) {
                         std::string funcName = get_function()->name;
-                        std::string error_message = "Error in function: " + funcName + ", index must be a positive whole number.";
+                        std::string error_message = "In function: " + funcName + ", index must be a positive whole number.";
                         yyerror(error_message.c_str());    
                 }
                 
                 //one that already exists
                 if (find(array_name, Array)) {
                         std::string funcName = get_function()->name;
-                        std::string error_message = "Error in function: " + funcName + ", array " + array_name + " already exists in the symbol table.";
+                        std::string error_message = "In function: " + funcName + ", array " + array_name + " already exists in the symbol table.";
                         yyerror(error_message.c_str());
                 }
                 add_variable_to_symbol_table(array_name, Array);
@@ -743,7 +743,7 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //error message assigning a variable that is not in symbo table
                 if (!find(int_name, Integer)) {
                         std::string funcName = get_function()->name;
-                        std::string error_message = "Error in function: " + funcName + ", int variable " + int_name + " already exists in the symbol table.";
+                        std::string error_message = "In function " + funcName + ", integer variable " + int_name + " was used without declaration.";
                         yyerror(error_message.c_str());
                 }
         };
@@ -754,7 +754,7 @@ assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSI
                 std::string array_name = $1;
                 if (!find(array_name, Array)) {
                         std::string funcName = get_function()->name;
-                        std::string error_message = "Error in function: " + funcName + ", array " + array_name + " does not exist in the symbol table.";
+                        std::string error_message = "In function " + funcName + ", array " + array_name + " does not exist in the symbol table.";
                         yyerror(error_message.c_str());
                 }
                 // TODO: Add second type of array access
