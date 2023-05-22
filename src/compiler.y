@@ -213,23 +213,20 @@ add_to_symbol_table: function_return_type function_identifier {
                 char *c = $2;
                 std::string function_identifier(c);
                 std::string functionName = function_identifier.substr(5, function_identifier.size() - 6);
+                
 
+                if (findFunction(functionName, Void) || findFunction(functionName, Integer))
+                {
+                                std::string errorMsg = "Cannot have two functions with the same name \"" + functionName + "\"";
+                                yyerror(errorMsg.c_str());
+                }
+                
                 if (ret == "Void")
                 {       
-                        if (findFunction(functionName, Void))
-                        {
-                                std::string errorMsg = "Redefinition of function " + functionName + " with identical void return type.";
-                                yyerror(errorMsg.c_str());
-                        }
                         add_function_to_symbol_table(functionName, Void);
                 }
                 else
                 {
-                        if (findFunction(functionName, Integer))
-                        {
-                                std::string errorMsg = "Redefinition of function " + functionName + " with identical integer return type.";
-                                yyerror(errorMsg.c_str());  
-                        }
                         add_function_to_symbol_table(functionName, Integer);
                 }
                 $$ = $2;
