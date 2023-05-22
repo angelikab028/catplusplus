@@ -178,7 +178,13 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 CodeNode *body = $7;
                 node->code += body->code;
 
-                // TODO: Error check, if there is no return statement, print an error.
+                if (node->code.find("ret") == std::string::npos)
+                {
+                        std::string funcName = get_function()->name;
+                        std::string errorMsg = "In function \"" + funcName + "\": no return statement in function returning integer";
+                        
+                        yyerror(errorMsg.c_str());
+                }
 
                 $$ = node;
         };
