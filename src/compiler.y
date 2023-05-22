@@ -604,11 +604,11 @@ assignment_dec: %empty {
                 $$ = node;
         };
 
-// TODO:
+// CHECK /// 
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code += "= " + $1.name + ", " + $3.name << "\n";
                 $$ = node;
         };
 
@@ -682,16 +682,15 @@ continue_st: CONTINUE SEMICOLON {
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = $2->code;
-                node->code = std::string("ret ") + $2->name + std::string("\n");
+                node->code = std::string("ret ") + $2->code + std::string("\n");
                 $$ = node;
         };
-// TODO:
+// CHECK /// 
 return_exp: add_exp {
                 //printf("return_exp -> add_exp\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
-                $$ = node;
+                node->code = std::string("ret ") + $1->code + std::string("\n");
+                $$ = node
         };
 // CHECK // 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
