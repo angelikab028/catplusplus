@@ -378,7 +378,7 @@ mult_exp: unary_exp {
                 //printf("mult_exp -> mult_exp MULT unary_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = $1->code + $3-> + declare_temp_code(temp);
+                node->code = $1->code + $3->code + declare_temp_code(temp);
                 node->code += "* " + temp + ", " + $1->name + ", " + $3->name + "\n";
                 node->name = temp;
                 $$ = node;
@@ -387,7 +387,7 @@ mult_exp: unary_exp {
                 //printf("mult_exp -> mult_exp DIV unary_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = $1->code + $3-> + declare_temp_code(temp);
+                node->code = $1->code + $3->code + declare_temp_code(temp);
                 node->code += "/ " + temp + ", " + $1->name + ", " + $3->name + "\n";
                 node->name = temp;
                 $$ = node;
@@ -396,7 +396,7 @@ mult_exp: unary_exp {
                 //printf("mult_exp -> mult_exp MOD unary_exp\n");
                  std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = $1->code + $3-> + declare_temp_code(temp);
+                node->code = $1->code + $3->code + declare_temp_code(temp);
                 node->code += "% " + temp + ", " + $1->name + ", " + $3->name + "\n";
                 node->name = temp;
                 $$ = node;
@@ -607,8 +607,9 @@ assignment_dec: %empty {
 // CHECK /// 
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
+                std::string ident = $1;
                 CodeNode *node = new CodeNode;
-                node->code += "= " + $1.name + ", " + $3.name << "\n";
+                node->code += "= " + ident + ", " + $3->name + "\n";
                 $$ = node;
         };
 
