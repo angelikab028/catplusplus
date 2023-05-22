@@ -86,7 +86,7 @@ void print_symbol_table(void) {
   printf("symbol table:\n");
   printf("--------------------\n");
   for(int i=0; i<symbol_table.size(); i++) {
-    printf("function: %sreturn type %d\n", symbol_table[i].name.c_str(), symbol_table[i].returnType);
+    printf("function: %s, return type %d\n", symbol_table[i].name.c_str(), symbol_table[i].returnType);
     for(int j=0; j<symbol_table[i].declarations.size(); j++) {
       printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
     }
@@ -110,9 +110,8 @@ std::string declare_temp_code(std::string &temp) {
 }
 
 // Pass by value, because we don't want to actually append the newline to the string.
-bool findFunction(std::string name, Type returnType)
+bool findFunction(std::string& name, Type returnType)
 {
-        name += "\n";
         for (int i = 0; i < symbol_table.size(); i++)
         {
                 if (symbol_table[i].name == name && symbol_table[i].returnType == returnType) return true;
@@ -141,6 +140,12 @@ struct CodeNode {
 %%
 prog_start: functions {
                 // printf("prog_start -> functions\n");
+                std::string mainCheck = "main";
+                if (!findFunction(mainCheck, Void))
+                {
+                        std::string errorMsg = "File must define a main function returning void.";
+                        yyerror(errorMsg.c_str());
+                }
                 CodeNode *node = $1;
                 std::string code = node->code;
                 printf("Generated Code:\n");
@@ -154,12 +159,6 @@ functions: function functions {
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
                 // Declare nodes for both nonterminals, and concatenate their code. Pass it up to the root.
-                std::string mainCheck = "main";
-                if (!findFunction(mainCheck, Void))
-                {
-                        std::string errorMsg = "File must define a main function returning void.";
-                        yyerror(errorMsg.c_str());
-                }
                 CodeNode *func = $1;
                 CodeNode *funcs = $2;
                 std::string code = func->code + funcs->code;
@@ -213,14 +212,24 @@ add_to_symbol_table: function_return_type function_identifier {
                 // These lines get the function_identifier from non-terminal 3 as a string, since function_identifier is an op_val.
                 char *c = $2;
                 std::string function_identifier(c);
-                std::string functionName = function_identifier.substr(5);
+                std::string functionName = function_identifier.substr(5, function_identifier.size() - 6);
 
                 if (ret == "Void")
-                {
+                {       
+                        if (findFunction(functionName, Void))
+                        {
+                                std::string errorMsg = "Redefinition of function " + functionName + " with identical void return type.";
+                                yyerror(errorMsg.c_str());
+                        }
                         add_function_to_symbol_table(functionName, Void);
                 }
                 else
                 {
+                        if (findFunction(functionName, Integer))
+                        {
+                                std::string errorMsg = "Redefinition of function " + functionName + " with identical integer return type.";
+                                yyerror(errorMsg.c_str());  
+                        }
                         add_function_to_symbol_table(functionName, Integer);
                 }
                 $$ = $2;
