@@ -107,8 +107,14 @@ std::string declare_temp_code(std::string &temp) {
         return std::string(". ") + temp + std::string("\n");
 }
 
-// TODO: Create a bool function that returns whether or not a function is in the symbol table
-// Parameter: std::string of function name.
+bool findFunction(std::string name)
+{
+        for (int i = 0; i < symbol_table.size(); i++)
+        {
+                if (symbol_table[i].name == name) return true;
+        }
+        return false;
+}
 
 struct CodeNode {
     std::string code; // generated code as a string.
@@ -205,9 +211,17 @@ function_identifier: IDENTIFIER {
                 $$ = c;
         };
 
-// TODO:
+// TODO: Params are temps
+// Return into a temp, return name of temp, assign to target.
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
                 //printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");
+                std::string tempName = create_temp();
+                std::string tempDeclaration = declare_temp_code(tempName);
+                CodeNode *node = new CodeNode;
+                node->code = $3->code;
+                node->code += "call " + std::string($1) + ", " + tempName;
+                node->name = tempName;
+                $$ = node;
         };
 
 // TODO:
@@ -216,6 +230,9 @@ parameters: expression parametersprime {
         }
         | %empty {
                 //printf("parameters -> epsilon\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 // TODO:
@@ -224,6 +241,9 @@ parametersprime: COMMA expression parametersprime {
         }
         | %empty {
                 //printf("parametersprime -> epsilon\n");
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                $$ = node;
         };
 
 arguments: argument argumentsprime {
