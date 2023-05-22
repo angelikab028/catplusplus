@@ -132,7 +132,7 @@ struct CodeNode {
 %token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS
 %token <op_val> NUMBER IDENTIFIER
 %type <op_val> function_identifier
-%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
+%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
 
 %%
 prog_start: functions {
@@ -183,7 +183,8 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 // These lines get the body of the function.
                 CodeNode *body = $7;
                 node->code += body->code;
-
+                
+                
                 if (node->code.find("ret") == std::string::npos)
                 {
                         std::string funcName = get_function()->name;
@@ -191,7 +192,7 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                         
                         yyerror(errorMsg.c_str());
                 }
-
+                
                 $$ = node;
         };
 
@@ -211,22 +212,25 @@ function_identifier: IDENTIFIER {
                 $$ = c;
         };
 
-// TODO: Params are temps
-// Return into a temp, return name of temp, assign to target.
 function_call: IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS {
                 //printf("function_call -> IDENTIFIER LEFT_PARENTHESIS parameters RIGHT_PARENTHESIS \n");
                 std::string tempName = create_temp();
                 std::string tempDeclaration = declare_temp_code(tempName);
                 CodeNode *node = new CodeNode;
-                node->code = $3->code;
-                node->code += "call " + std::string($1) + ", " + tempName;
+                node->code = tempDeclaration + $3->code;
+                node->code +=  "call " + std::string($1) + ", " + tempName + "\n";
                 node->name = tempName;
                 $$ = node;
         };
 
-// TODO:
-parameters: expression parametersprime {
+parameters: parameter parametersprime {
                 //printf("parameters -> IDENTIFIER parametersprime\n");
+                CodeNode *node = new CodeNode;
+                CodeNode *param = $1;
+                CodeNode *paramprime = $2;
+
+                node->code = param->code + paramprime->code;
+                $$ = node;
         }
         | %empty {
                 //printf("parameters -> epsilon\n");
@@ -235,14 +239,26 @@ parameters: expression parametersprime {
                 $$ = node;
         };
 
-// TODO:
-parametersprime: COMMA expression parametersprime {
+parametersprime: COMMA parameter parametersprime {
                 //printf("parametersprime -> COMMA IDENTIFIER parametersprime\n");
+                $$ = $2;
         }
         | %empty {
                 //printf("parametersprime -> epsilon\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                $$ = node;
+        };
+
+parameter: add_exp {
+                CodeNode *node = new CodeNode;
+                CodeNode *param = $1;
+
+                //std::string tempName = create_temp();
+                //std::string tempDeclaration = declare_temp_code(tempName);
+                
+                std::string result = param->name;
+                node->code += param->code + "param " + result + "\n";
                 $$ = node;
         };
 
@@ -443,7 +459,7 @@ primary_exp: NUMBER {
                 $$ = $1;
         }
         | function_call {
-                //printf("primary_exp -> function_call\n");
+                printf("primary_exp -> function_call\n");
                 $$ = $1;
         }
         | IDENTIFIER {
