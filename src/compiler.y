@@ -116,6 +116,8 @@ bool findFunction(std::string name)
         return false;
 }
 
+// TODO: Create check for main function
+
 struct CodeNode {
     std::string code; // generated code as a string.
     std::string name; // name of result register
@@ -192,7 +194,7 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                         
                         yyerror(errorMsg.c_str());
                 }
-                
+                node->code += "endfunc\n";
                 $$ = node;
         };
 
@@ -655,7 +657,7 @@ array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET
                         yyerror(error_message.c_str());
                 }
                 add_variable_to_symbol_table(array_name, Array);
-                node->code = ".[] " + array_name + ", " + symbol + "\n";
+                node->code = temp + ".[] " + array_name + ", " + symbol + "\n";
                 $$ = node;
         };
 
@@ -695,23 +697,26 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
 // done :3 []= dst, index, src	dst[index] = src (index and src can be immediates)
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
+                std::string array_name = $1;
+                if (!find(array_name, Array)) {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "Error in function: " + funcName + ", array " + array_name + " does not exist in the symbol table.";
+                        yyerror(error_message.c_str());
+                }
+                // TODO: Add second type of array access
+                // TODO: Fix issue with temp declarations not being printed
                 std::string temp = create_temp();
                 std::string temp2 = declare_temp_code(temp);
                 CodeNode* node = new CodeNode;
                 std::string symbol = $1;                       
                 std::string index = $3;                      
                 CodeNode* src = $6;                            
-                std::string array_name = $1;
                 node->name = temp;
                 node->code = src->code + temp2 + "[]= " + array_name + ", " + index + ", " + src->name + "\n";  
                 $$ = node;
 
                 //array that instn int he scymbol table
-                if (!find(array_name, Array)) {
-                        std::string funcName = get_function()->name;
-                        std::string error_message = "Error in function: " + funcName + ", array " + array_name + " does not exist in the symbol table.";
-                        yyerror(error_message.c_str());
-                }
+                
         };
 
 statement_block: LEFT_CURLY statements RIGHT_CURLY {
@@ -786,13 +791,14 @@ return_exp: add_exp {
                 // node->code = std::string("ret ") + $1->code + std::string("\n");
                 $$ = $1;
         };
-// CHECK // 
+// TODO: Implement array printing and reading from stdin
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
                 node->code = declare_temp_code(temp);
                 node->code += ".< " + temp + "\n";
+                node->name = temp;
                 $$ = node;
         };
 // CHECK //
