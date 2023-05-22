@@ -411,11 +411,10 @@ primary_exp: NUMBER {
                 $$ = $1;
         }
         | IDENTIFIER {
-                // TODO: Error check for redeclaration
+                // TODO: Error check for no declaration
                 CodeNode *node = new CodeNode;
                 std::string symbol($1);
                 node->name = symbol;
-                node->code = ". " + symbol + "\n";
                 $$ = node;
         };
 
