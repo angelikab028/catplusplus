@@ -678,14 +678,14 @@ assignment_dec: %empty {
 
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
-                node->code += "= " + ident + ", " + $3->name + "\n";
+                CodeNode *node = new CodeNode;
                 CodeNode *numba = $3;
                 std::string int_name = $1;
                 node->code = numba->code + "= " + int_name + ", " + numba->name + "\n";
                 $$ = node;
 
                 //error message assigning a variable that is not in symbo table
-                if (find(int_name, Integer)) {
+                if (!find(int_name, Integer)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "Error in function: " + funcName + ", int variable " + int_name + " already exists in the symbol table.";
                         yyerror(error_message.c_str());
@@ -776,15 +776,15 @@ continue_st: CONTINUE SEMICOLON {
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = std::string("ret ") + $2->code + std::string("\n");
+                node->code = $2->code + std::string("ret ") + $2->name + std::string("\n");
                 $$ = node;
         };
 // CHECK /// 
 return_exp: add_exp {
                 //printf("return_exp -> add_exp\n");
-                CodeNode *node = new CodeNode;
-                node->code = std::string("ret ") + $1->code + std::string("\n");
-                $$ = node
+                // CodeNode *node = new CodeNode;
+                // node->code = std::string("ret ") + $1->code + std::string("\n");
+                $$ = $1;
         };
 // CHECK // 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
@@ -792,7 +792,7 @@ read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
                 node->code = declare_temp_code(temp);
-                node->code += ".<" + temp + "\n";
+                node->code += ".< " + temp + "\n";
                 $$ = node;
         };
 // CHECK //
@@ -800,7 +800,7 @@ print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = $3->code;
-                node->code += ".<" + $3->name + "\n";
+                node->code += ".> " + $3->name + "\n";
                 $$ = node; 
                 
         };
