@@ -86,7 +86,7 @@ void print_symbol_table(void) {
   printf("symbol table:\n");
   printf("--------------------\n");
   for(int i=0; i<symbol_table.size(); i++) {
-    printf("function: %s\n", symbol_table[i].name.c_str());
+    printf("function: %sreturn type %d\n", symbol_table[i].name.c_str(), symbol_table[i].returnType);
     for(int j=0; j<symbol_table[i].declarations.size(); j++) {
       printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
     }
@@ -109,16 +109,16 @@ std::string declare_temp_code(std::string &temp) {
         return std::string(". ") + temp + std::string("\n");
 }
 
-bool findFunction(std::string name)
+// Pass by value, because we don't want to actually append the newline to the string.
+bool findFunction(std::string name, Type returnType)
 {
+        name += "\n";
         for (int i = 0; i < symbol_table.size(); i++)
         {
-                if (symbol_table[i].name == name) return true;
+                if (symbol_table[i].name == name && symbol_table[i].returnType == returnType) return true;
         }
         return false;
 }
-
-// TODO: Create check for main function
 
 struct CodeNode {
     std::string code; // generated code as a string.
@@ -154,6 +154,12 @@ functions: function functions {
                 // The "functions" non-terminal contains all the *functions*, and the code they all contain.
                 // Since our langauge requires all of our code to be in functions, this non-terminal basically holds all the code.
                 // Declare nodes for both nonterminals, and concatenate their code. Pass it up to the root.
+                std::string mainCheck = "main";
+                if (!findFunction(mainCheck, Void))
+                {
+                        std::string errorMsg = "File must define a main function returning void.";
+                        yyerror(errorMsg.c_str());
+                }
                 CodeNode *func = $1;
                 CodeNode *funcs = $2;
                 std::string code = func->code + funcs->code;
@@ -207,14 +213,15 @@ add_to_symbol_table: function_return_type function_identifier {
                 // These lines get the function_identifier from non-terminal 3 as a string, since function_identifier is an op_val.
                 char *c = $2;
                 std::string function_identifier(c);
+                std::string functionName = function_identifier.substr(5);
 
                 if (ret == "Void")
                 {
-                        add_function_to_symbol_table(function_identifier, Void);
+                        add_function_to_symbol_table(functionName, Void);
                 }
                 else
                 {
-                        add_function_to_symbol_table(function_identifier, Integer);
+                        add_function_to_symbol_table(functionName, Integer);
                 }
                 $$ = $2;
         };
