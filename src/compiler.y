@@ -112,12 +112,10 @@ std::string declare_temp_code(std::string &temp) {
 
 struct CodeNode {
     std::string code; // generated code as a string.
-    std::string name;
+    std::string name; // name of result register
 };
 %}
 
-// TODO: Potentially add another type for mathematical expression such that we can keep track of their type.
-// Probably not though! Temp variables/registers are our friend, and since we don't need to do code optimization, we should be fine.
 %union {
   char* op_val;
   struct CodeNode *node;
@@ -179,6 +177,8 @@ function: FUNCTION INTEGER function_identifier LEFT_PARENTHESIS arguments RIGHT_
                 // These lines get the body of the function.
                 CodeNode *body = $7;
                 node->code += body->code;
+
+                // TODO: Error check, if there is no return statement, print an error.
 
                 $$ = node;
         };
