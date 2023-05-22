@@ -411,27 +411,36 @@ add_exp: mult_exp {
         };
 
 
-// TODO: 
+// CHECK /// 
 mult_exp: unary_exp {
                 //printf("mult_exp -> unary_exp\n");
                 $$ = $1;
         }
         | mult_exp MULT unary_exp {
                 //printf("mult_exp -> mult_exp MULT unary_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "* " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         }
         | mult_exp DIV unary_exp {
                 //printf("mult_exp -> mult_exp DIV unary_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "/ " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         }
         | mult_exp MOD unary_exp {
                 //printf("mult_exp -> mult_exp MOD unary_exp\n");
+                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "% " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         };
 
@@ -667,10 +676,9 @@ assignment_dec: %empty {
                 $$ = node;
         };
 
-// done :3 = dst, src	dst = src (src can be an immediate)
 assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 //printf("assign_int_st -> IDENTIFIER ASSIGN NUMBER SEMICOLON\n");
-                CodeNode *node = new CodeNode;
+                node->code += "= " + ident + ", " + $3->name + "\n";
                 CodeNode *numba = $3;
                 std::string int_name = $1;
                 node->code = numba->code + "= " + int_name + ", " + numba->name + "\n";
@@ -764,33 +772,37 @@ continue_st: CONTINUE SEMICOLON {
                 $$ = node;
         };
 
-// TODO:
+// CHECK // 
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = std::string("ret ") + $2->code + std::string("\n");
                 $$ = node;
         };
-// TODO:
+// CHECK /// 
 return_exp: add_exp {
                 //printf("return_exp -> add_exp\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
-                $$ = node;
+                node->code = std::string("ret ") + $1->code + std::string("\n");
+                $$ = node
         };
-// TODO: 
+// CHECK // 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = declare_temp_code(temp);
+                node->code += ".<" + temp + "\n";
                 $$ = node;
         };
-// TODO:
+// CHECK //
 print_st: PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("print_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
-                $$ = node;
+                node->code = $3->code;
+                node->code += ".<" + $3->name + "\n";
+                $$ = node; 
+                
         };
 %%
 // UNCOMMENT THIS!
