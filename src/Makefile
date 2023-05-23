@@ -8,4 +8,4 @@ catnip: lex.yy.c compiler.tab.c compiler.tab.h
 
 $(info ******************* RUN USING ./catnip filename.meow *******************)
 clean:
-	rm -f a.out catnip lex.yy.c compiler.tab.c compiler.tab.h compiler.output compiler.tab.c compiler.tab.h
+	rm -f a.out catnip lex.yy.c compiler.tab.c compiler.tab.h compiler.output compiler.tab.c compiler.tab.h test.mil
