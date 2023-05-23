@@ -31,5 +31,4 @@ purr hairball main() {
     b = 2 :3
     c = (a + b) * 7 :3
     scratch(c) :3
-
 }

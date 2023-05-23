@@ -1,4 +1,4 @@
-purr hairball test() {
+purr meow test() {
     meow n :3
 
     litter(n) :3

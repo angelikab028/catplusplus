@@ -3,6 +3,9 @@
 #include "compiler.tab.h"
 int line_number = 1; 
 int column_number  = 0;
+extern char *identToken;
+extern int numberToken;
+void yyerror(char const *msg);
 
 %}
 
@@ -22,9 +25,7 @@ SEMICOLON ":3"
 BREAK "neuter"
 CONTINUE "keep_going"
 IF "purrhaps"
-FOR "fur"
-TRUE "furreal"
-FALSE "hiss"
+VOID "hairball"
 COMMENT "O_O"([ \t]?.)*
 PRINT "scratch"
 READ "litter"
@@ -42,7 +43,6 @@ LESSTHAN "<"
 GREATERTHAN ">"
 LESSOREQUALS "<="
 GREATOREQUALS ">="
-VOID "hairball"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
 INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
@@ -52,6 +52,10 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         // printf("TOKEN NUMBER: %s\n", yytext);
         column_number += yyleng;
         yyless(yyleng);
+        char * token = new char[yyleng];
+        strcpy(token, yytext);
+        yylval.op_val = token;
+        numberToken = atoi(yytext); 
         return NUMBER;
 }
 
@@ -91,24 +95,6 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         return IF;
 }
 
-{FOR} {
-        // printf("TOKEN FOR: %s\n", yytext);
-        column_number += yyleng;
-        return FOR;
-}
-
-{TRUE} {
-        // printf("TOKEN TRUE: %s\n", yytext);
-        column_number += yyleng;
-        return TRUE;
-}
-
-{FALSE} {
-        // printf("TOKEN FALSE: %s\n", yytext);
-        column_number += yyleng;
-        return FALSE;
-}
-
 {PRINT} {
         // printf("TOKEN PRINT: %s\n", yytext);
         column_number += yyleng;
@@ -121,6 +107,11 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         return READ;
 }
 
+{VOID} {
+        column_number += yyleng;
+        return VOID;
+}
+
 {RETURN} {
         // printf("TOKEN RETURN: %s\n", yytext);
         column_number += yyleng;
@@ -131,12 +122,6 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         // printf("TOKEN WHILE: %s\n", yytext);
         column_number += yyleng;
         return WHILE;
-}
-
-{VOID} {
-        // printf("TOKEN VOID: %s\n", yytext);
-        column_number += yyleng;
-        return VOID;
 }
 
 {ASSIGN} {
@@ -256,12 +241,16 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 {IDENTIFIER} {
         // printf("TOKEN IDENTIFIER: %s\n", yytext);
         column_number += yyleng;
+        char * token = new char[yyleng];
+        strcpy(token, yytext);
+        yylval.op_val = token;
+        identToken = yytext; 
         return IDENTIFIER;
 }
 
 {INVALIDIDENTIFIER} {
         printf("INVALID IDENTIFIER ERROR (CANNOT BEGIN WITH NUMBER) AT LINE %d, COLUMN %d: %s\n", line_number, column_number, yytext);
-        exit(1);
+        // exit(1);
 }
 
 {COMMENT} {
@@ -280,7 +269,7 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
 . { 
         printf("UNRECOGNIZED SYMBOL ERROR AT LINE %d, COLUMN %d: %s\n", line_number, column_number, yytext);
-        exit(1); 
+        // exit(1); 
 }
 %%
 // Remove main, move to Bison
