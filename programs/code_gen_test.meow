@@ -2,10 +2,18 @@ purr meow test() {
     meow a[2] :3
     a[0] = 2 :3
     meow b :3
+    meow b :3
     b = 2 :3
     b = a[1] :3
 
     knead 0 :3
+}
+
+purr meow test() {
+    meow a[10] :3
+    a = 3 :3
+    meow b :3
+    b[5] = 10 :3
 }
 
 purr meow errors() {
@@ -17,3 +25,6 @@ purr meow errors() {
 
     knead 0 :3
 }
+
+O_O Error that results in syntax error:
+O_O Trying to name a variable with the same name as a reserved keyword.

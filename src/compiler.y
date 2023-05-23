@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sstream> // using sstream instead of to_string because stdlib on bolt doesn't have to_string in the stl (why?)
-// TODO: Make a test file
 extern FILE* yyin;
 extern int line_number;
 extern int column_number;
@@ -149,7 +148,7 @@ prog_start: functions {
                 std::string code = node->code;
                 //printf("Generated Code:\n");
                 printf("%s\n", code.c_str());
-                //print_symbol_table();
+                print_symbol_table();
         };
         
 functions: function functions {
@@ -526,7 +525,7 @@ primary_exp: NUMBER {
         | IDENTIFIER {
                 CodeNode *node = new CodeNode;
                 std::string symbol($1);
-                if (!find(symbol, Integer) && !find(symbol, Array))
+                if (!find(symbol, Integer))
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In function \"" + funcName + "\": use of unknown variable \"" + symbol + "\"" + " before declaration.";
@@ -688,8 +687,8 @@ array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET
                         yyerror(error_message.c_str());    
                 }
                 
-                //one that already exists
-                if (find(array_name, Array)) {
+                //name  that already exists
+                if (find(array_name, Array) || find(array_name, Integer)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function: " + funcName + ", array " + array_name + " already exists in the symbol table.";
                         yyerror(error_message.c_str());
@@ -725,7 +724,14 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 $$ = node;
 
                 //error message assigning a variable that is not in symbo table
-                if (!find(int_name, Integer)) {
+                if (find(int_name, Array))
+                {
+                        std::string funcName = get_function()->name;
+                        std::string errorMsg = "In funtion \"" + funcName + "\": use of array variable \"" + int_name + "\"" + " without specifying index.";
+
+                        yyerror(errorMsg.c_str());
+                }
+                else if (!find(int_name, Integer)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function " + funcName + ", integer variable " + int_name + " was used without declaration.";
                         yyerror(error_message.c_str());
@@ -742,18 +748,23 @@ Array Access Statements
 assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSIGN add_exp SEMICOLON {
                 //printf("assign_array_st -> IDENTIFIER LEFT_PARENTHESIS NUMBER RIGHT_PARENTHESIS ASSIGN add_exp SEMICOLON\n");
                 std::string array_name($1);
-                if (!find(array_name, Array)) {
+                if (find(array_name, Integer))
+                {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "In function " + funcName + ", use of integer variable " + array_name + " as array (specifying index for integer variable).";
+                        yyerror(error_message.c_str());
+                }
+                else if (!find(array_name, Array)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function " + funcName + ", array " + array_name + " does not exist in the symbol table.";
                         yyerror(error_message.c_str());
                 }
-                // TODO: Add second type of array access
                 std::string temp = create_temp();
                 std::string temp2 = declare_temp_code(temp);
                 CodeNode* node = new CodeNode;
-                std::string symbol($1);                       
-                std::string index($3);                      
-                CodeNode* src = $6;                            
+                std::string symbol($1);
+                std::string index($3);
+                CodeNode* src = $6;
                 node->name = temp;
                 node->code = src->code + temp2 + "[]= " + array_name + ", " + index + ", " + src->name + "\n";  
                 $$ = node;
@@ -838,7 +849,6 @@ Input/Output Statements
 .[]> src, index	write the value of src[index] into standard out
 */
 
-// TODO: Implement array printing and reading from stdin
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
                 std::string temp = create_temp();
