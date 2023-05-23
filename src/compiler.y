@@ -148,7 +148,7 @@ prog_start: functions {
                 std::string code = node->code;
                 //printf("Generated Code:\n");
                 printf("%s\n", code.c_str());
-                print_symbol_table();
+                //print_symbol_table();
         };
         
 functions: function functions {
