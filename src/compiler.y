@@ -544,9 +544,9 @@ array_element: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET {
         std::string symbol($3);
         std::string temp = create_temp();
         node->name = temp;
-        temp = declare_temp_code(temp); 
+        std::string declareTemp = declare_temp_code(temp); 
         std::string array_name = $1;
-        node->code = temp + ".[] " + array_name + ", " + symbol + "\n";
+        node->code = declareTemp + "=[] " + temp + ", " + array_name + ", " + symbol + "\n";
         $$ = node;
 };
 
