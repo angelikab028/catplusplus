@@ -407,31 +407,31 @@ cond_exp: add_exp {
                 //printf("cond_exp -> add_exp\n");
                 $$ = $1;
         }
-        | cond_exp LESSTHAN add_exp {
+        | cond_exp LESSTHAN add_exp { // TODO:
                 //printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         }
-        | cond_exp GREATERTHAN add_exp {
+        | cond_exp GREATERTHAN add_exp { // TODO:
                 //printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         }
-        | cond_exp GREATOREQUALS add_exp {
+        | cond_exp GREATOREQUALS add_exp { // TODO:
                 //printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         }
-        | cond_exp LESSOREQUALS add_exp {
+        | cond_exp LESSOREQUALS add_exp { // TODO:
                 //printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         }
-        | cond_exp EQUALS add_exp {
+        | cond_exp EQUALS add_exp { // TODO:
                 //printf("cond_exp -> cond_exp EQUALS add_exp\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
@@ -782,14 +782,14 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
                 $$ = node;
         };
 
-if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {
+if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st { // TODO:
                 //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         };
 
-else_st: ELSE statement_block  {
+else_st: ELSE statement_block  { // TODO:
                 //printf("else_st -> ELSE statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
@@ -808,21 +808,21 @@ else_st: ELSE statement_block  {
                 $$ = node;
         };
 
-loop_st: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {
+loop_st: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         };
 
-break_st: BREAK SEMICOLON {
+break_st: BREAK SEMICOLON { // TODO:
                 //printf("break_st -> BREAK SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
         };
 
-continue_st: CONTINUE SEMICOLON {
+continue_st: CONTINUE SEMICOLON { // TODO:
                 //printf("continue_st -> CONTINUE SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
