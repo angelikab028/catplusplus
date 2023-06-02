@@ -130,7 +130,7 @@ struct CodeNode {
 
 %define parse.error verbose
 %start prog_start
-%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS VOID
+%token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS NOTEQUALS VOID
 %token <op_val> NUMBER IDENTIFIER
 %type <op_val> function_identifier function_return_type add_to_symbol_table
 %type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
@@ -407,7 +407,7 @@ cond_exp: add_exp {
                 //printf("cond_exp -> add_exp\n");
                 $$ = $1;
         }
-        | cond_exp LESSTHAN add_exp { // TODO:
+        | cond_exp LESSTHAN add_exp {
                 //printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
@@ -416,7 +416,7 @@ cond_exp: add_exp {
                 node->name = temp;
                 $$ = node;
         }
-        | cond_exp GREATERTHAN add_exp { // TODO:
+        | cond_exp GREATERTHAN add_exp {
                 //printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
@@ -425,7 +425,7 @@ cond_exp: add_exp {
                 node->name = temp;
                 $$ = node;
         }
-        | cond_exp GREATOREQUALS add_exp { // TODO:
+        | cond_exp GREATOREQUALS add_exp {
                 //printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
@@ -434,7 +434,7 @@ cond_exp: add_exp {
                 node->name = temp;
                 $$ = node;
         }
-        | cond_exp LESSOREQUALS add_exp { // TODO:
+        | cond_exp LESSOREQUALS add_exp {
                 //printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
@@ -443,7 +443,7 @@ cond_exp: add_exp {
                 node->name = temp;
                 $$ = node;
         }
-        | cond_exp EQUALS add_exp { // TODO:
+        | cond_exp EQUALS add_exp {
                 //printf("cond_exp -> cond_exp EQUALS add_exp\n");
                 std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
@@ -451,6 +451,14 @@ cond_exp: add_exp {
                 node->code += "== " + temp + ", " + $1->name + ", " + $3->name + "\n";
                 node->name = temp;
                 $$ = node;
+        }
+        | cond_exp NOTEQUALS add_exp {
+                std::string temp = create_temp();
+                CodeNode *node = new CodeNode;
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "!= " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
+                $$ = node;  
         };
 
 add_exp: mult_exp {

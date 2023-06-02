@@ -43,6 +43,7 @@ LESSTHAN "<"
 GREATERTHAN ">"
 LESSOREQUALS "<="
 GREATOREQUALS ">="
+NOTEQUALS "!="
 IDENTIFIER [a-zA-Z][a-zA-Z0-9]*
 INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
 
@@ -212,6 +213,10 @@ INVALIDIDENTIFIER [0-9]+{IDENTIFIER}
         // printf("TOKEN EQUALS: %s\n", yytext);
         column_number += yyleng;
         return EQUALS;
+}
+{NOTEQUALS} {
+        column_number += yyleng;
+        return NOTEQUALS;
 }
 
 {LESSTHAN} {
