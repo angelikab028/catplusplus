@@ -805,6 +805,23 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
                 $$ = node;
         };
 
+/*
+
+. _temp0
+< _temp0, a, b
+
+?:= if_true0, _temp0
+:= else0
+
+: if_true0
+= c, b
+:= endif0
+: else0
+= c, a
+: endif0
+
+*/
+
 if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st { // TODO:
                 //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
                 CodeNode *node = new CodeNode;
