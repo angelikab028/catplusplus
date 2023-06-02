@@ -409,32 +409,47 @@ cond_exp: add_exp {
         }
         | cond_exp LESSTHAN add_exp { // TODO:
                 //printf("cond_exp -> cond_exp LESSTHAN add_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "< " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         }
         | cond_exp GREATERTHAN add_exp { // TODO:
                 //printf("cond_exp -> cond_exp GREATERTHAN add_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "> " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         }
         | cond_exp GREATOREQUALS add_exp { // TODO:
                 //printf("cond_exp -> cond_exp GREATOREQUALS add_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += ">= " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         }
         | cond_exp LESSOREQUALS add_exp { // TODO:
                 //printf("cond_exp -> cond_exp LESSOREQUALS add_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "<= " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         }
         | cond_exp EQUALS add_exp { // TODO:
                 //printf("cond_exp -> cond_exp EQUALS add_exp\n");
+                std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = "";
+                node->code = $1->code + $3->code + declare_temp_code(temp);
+                node->code += "== " + temp + ", " + $1->name + ", " + $3->name + "\n";
+                node->name = temp;
                 $$ = node;
         };
 
