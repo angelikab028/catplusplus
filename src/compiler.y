@@ -108,6 +108,28 @@ std::string declare_temp_code(std::string &temp) {
         return std::string(". ") + temp + std::string("\n");
 }
 
+std::string create_if() {
+        static int num_if = 0;
+        std::ostringstream ss;
+        ss << num;
+        std::string value = "if_statement" + ss.str();
+        num_if += 1;
+        return value;
+}
+
+std::string create_while() {
+        static int num_while = 0;
+        std::ostringstream ss;
+        ss << num;
+        std::string value = "while_loop" + ss.str();
+        num_if += 1;
+        return value;
+}
+
+std::string declare_label(std::string &temp) {
+        return std::string(": ") + temp + std::string("\n");
+}
+
 bool findFunction(std::string& name, Type returnType)
 {
         for (int i = 0; i < symbol_table.size(); i++)
@@ -807,12 +829,15 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
 
 /*
 
+// initialize conditional register
 . _temp0
 < _temp0, a, b
 
+// if-else statement
 ?:= if_true0, _temp0
 := else0
 
+// branches
 : if_true0
 = c, b
 := endif0
