@@ -111,7 +111,7 @@ std::string declare_temp_code(std::string &temp) {
 std::string create_if() {
         static int num_if = 0;
         std::ostringstream ss;
-        ss << num;
+        ss << num_if;
         std::string value = "if_statement" + ss.str();
         num_if += 1;
         return value;
@@ -120,9 +120,18 @@ std::string create_if() {
 std::string create_while() {
         static int num_while = 0;
         std::ostringstream ss;
-        ss << num;
+        ss << num_while;
         std::string value = "while_loop" + ss.str();
-        num_if += 1;
+        num_while += 1;
+        return value;
+}
+
+std::string create_else() {
+        static int num_else = 0;
+        std::ostringstream ss;
+        ss << num_elses;
+        std::string value = "else_statement" + ss.str();
+        num_else += 1;
         return value;
 }
 
@@ -830,6 +839,7 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
 /*
 
 // initialize conditional register
+// done in conditional statements, temp register saved in $3
 . _temp0
 < _temp0, a, b
 
@@ -841,6 +851,7 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
 : if_true0
 = c, b
 := endif0
+// else
 : else0
 = c, a
 : endif0
@@ -851,17 +862,25 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                std::string label = create_if();
+                node->name = label;
+                std::string declaration = declare_label(label);
+                std::string endDeclaration = "end_" + declaration;
+                CodeNode *exp = $3;
+                CodeNode *statementBlock = $5;
+                CodeNode *elseStatement = $6;
+                std::string gotoElse = "";
+                if (!$6->code.empty())
+                {
+                        gotoElse = ":= " + $6->name;
+                }
+                std::string conditionalStatement = "\n";
+                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + endDeclaration + elseStatement->code; 
                 $$ = node;
         };
 
 else_st: ELSE statement_block  { // TODO:
                 //printf("else_st -> ELSE statement_block\n");
-                CodeNode *node = new CodeNode;
-                node->code = "";
-                $$ = node;
-        }
-        | ELSE if_st {
-                //printf("else_st -> ELSE if_st\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 $$ = node;
