@@ -16,6 +16,8 @@ char *identToken;
 int numberToken;
 int count_names = 0;
 
+bool isError = false;
+
 enum Type { Integer, Array, Void };
 
 struct Symbol {
@@ -173,12 +175,13 @@ prog_start: functions {
                 if (!findFunction(mainCheck, Void))
                 {
                         std::string errorMsg = "File must define a main function returning void.";
+                        isError = true;
                         yyerror(errorMsg.c_str());
                 }
                 CodeNode *node = $1;
                 std::string code = node->code;
                 //printf("Generated Code:\n");
-                printf("%s\n", code.c_str());
+                if (!isError) printf("%s\n", code.c_str());
                 //print_symbol_table();
         };
         
@@ -227,7 +230,7 @@ function: FUNCTION add_to_symbol_table LEFT_PARENTHESIS arguments RIGHT_PARENTHE
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In function \"" + funcName + "\": no return statement in function returning integer";
-                        
+                        isError = true;
                         yyerror(errorMsg.c_str());
                 }
                 node->code += "endfunc\n";
@@ -247,6 +250,7 @@ add_to_symbol_table: function_return_type function_identifier {
                 if (findFunction(functionName, Void) || findFunction(functionName, Integer))
                 {
                                 std::string errorMsg = "Cannot have two functions with the same name \"" + functionName + "\"";
+                                isError = true;
                                 yyerror(errorMsg.c_str());
                 }
                 
@@ -419,7 +423,7 @@ argument: INTEGER IDENTIFIER {
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In function \"" + funcName + "\": cannot have multiple arguments with the same name \"" + ident + "\"";
-                        
+                        isError = true;
                         yyerror(errorMsg.c_str());
                         
                 }
@@ -583,7 +587,7 @@ primary_exp: NUMBER {
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In function \"" + funcName + "\": use of unknown variable \"" + symbol + "\"" + " before declaration.";
-                        
+                        isError = true;
                         yyerror(errorMsg.c_str());
                 }
                 node->name = symbol;
@@ -700,7 +704,7 @@ int_dec_st: INTEGER IDENTIFIER assignment_dec SEMICOLON {
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In function \"" + funcName + "\": redeclaration of variable \"" + ident + "\"";
-                        
+                        isError = true;
                         yyerror(errorMsg.c_str());
                 }
 
@@ -738,6 +742,7 @@ array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET
                 if (index < 1) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function: " + funcName + ", index must be a positive whole number.";
+                        isError = true;
                         yyerror(error_message.c_str());    
                 }
                 
@@ -745,6 +750,7 @@ array_dec_st: INTEGER IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET
                 if (find(array_name, Array) || find(array_name, Integer)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function: " + funcName + ", array " + array_name + " already exists in the symbol table.";
+                        isError = true;
                         yyerror(error_message.c_str());
                 }
                 add_variable_to_symbol_table(array_name, Array);
@@ -782,12 +788,13 @@ assign_int_st: IDENTIFIER ASSIGN add_exp SEMICOLON {
                 {
                         std::string funcName = get_function()->name;
                         std::string errorMsg = "In funtion \"" + funcName + "\": use of array variable \"" + int_name + "\"" + " without specifying index.";
-
+                        isError = true;
                         yyerror(errorMsg.c_str());
                 }
                 else if (!find(int_name, Integer)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function " + funcName + ", integer variable " + int_name + " was used without declaration.";
+                        isError = true;
                         yyerror(error_message.c_str());
                 }
         };
@@ -806,11 +813,13 @@ assign_array_st: IDENTIFIER LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET ASSI
                 {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function " + funcName + ", use of integer variable " + array_name + " as array (specifying index for integer variable).";
+                        isError = true;
                         yyerror(error_message.c_str());
                 }
                 else if (!find(array_name, Array)) {
                         std::string funcName = get_function()->name;
                         std::string error_message = "In function " + funcName + ", array " + array_name + " does not exist in the symbol table.";
+                        isError = true;
                         yyerror(error_message.c_str());
                 }
                 std::string temp = create_temp();
@@ -865,9 +874,10 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 std::string label = create_if();
                 node->name = label;
                 std::string declaration = declare_label(label);
-                std::string endDeclaration = "end_" + declaration;
+                std::string endLabel = "end_" + label;
+                std::string endDeclaration = declare_label(endLabel);
                 CodeNode *exp = $3;
-                CodeNode *statementBlock = $5;
+                CodeNode *statementBlock = $5; 
                 CodeNode *elseStatement = $6;
                 std::string gotoElse = "";
                 if (!$6->code.empty())
@@ -875,15 +885,14 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                         gotoElse = ":= " + $6->name;
                 }
                 std::string conditionalStatement = "\n";
-                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + endDeclaration + elseStatement->code; 
+                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + endDeclaration + elseStatement->code + ":= " + endLabel; 
                 $$ = node;
         };
 
 else_st: ELSE statement_block  { // TODO:
                 //printf("else_st -> ELSE statement_block\n");
                 CodeNode *node = new CodeNode;
-                node->code = "";
-                $$ = node;
+                std::string label = create_else();
         }
         | %empty {
                 //printf("else_st -> epsilon\n");
