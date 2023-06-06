@@ -888,7 +888,7 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                         gotoElse = ":= " + $6->name + "\n";
                 }
                 std::string conditionalStatement = "?:= " + label + ", " + $3->name + "\n";
-                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + ":= " + endLabel + "\n" + elseStatement->code + ": " + endLabel + "\n"; 
+                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + ":= " + endLabel + "\n" + elseStatement->code + endDeclaration; 
                 $$ = node;
         };
 
