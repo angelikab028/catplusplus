@@ -15,7 +15,6 @@ extern int yylex(void);
 char *identToken;
 int numberToken;
 int count_names = 0;
-int loop = 0;
 
 bool isError = false;
 
@@ -903,7 +902,7 @@ else_st: ELSE statement_block  { // TODO:
                 $$ = node;
         };
 
-loop_st: WHILE {loop++;} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
+loop_st: WHILE {/* add label 2 stack*/} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {/*pop that joint */}{ // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
