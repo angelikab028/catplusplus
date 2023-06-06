@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sstream> // using sstream instead of to_string because stdlib on bolt doesn't have to_string in the stl (why?)
+#include <stack>
 extern FILE* yyin;
 extern int line_number;
 extern int column_number;
@@ -32,6 +33,7 @@ struct Function {
 };
 
 std::vector <Function> symbol_table;
+std::stack <std::string> label_stack;
 
 // remember that Bison is a bottom up parser: that it parses leaf nodes first before
 // parsing the parent nodes. So control flow begins at the leaf grammar nodes
@@ -883,17 +885,26 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 std::string gotoElse = "";
                 if (!$6->code.empty())
                 {
-                        gotoElse = ":= " + $6->name;
+                        gotoElse = ":= " + $6->name + "\n";
                 }
-                std::string conditionalStatement = "?:= " + label + $3->name + "\n";
-                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + endDeclaration + elseStatement->code + ":= " + endLabel; 
+                std::string conditionalStatement = "?:= " + label + ", " + $3->name + "\n";
+                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + ":= " + endLabel + "\n" + elseStatement->code + ": " + endLabel + "\n"; 
                 $$ = node;
         };
 
 else_st: ELSE statement_block  { // TODO:
                 //printf("else_st -> ELSE statement_block\n");
                 CodeNode *node = new CodeNode;
+                node->code = "";
                 std::string label = create_else();
+                node->name = label;
+                std::string declaration = declare_label(label);
+                std::string endLabel = "end_" + label;
+                std::string endDeclaration = declare_label(endLabel);
+                CodeNode *statementBlock = $2;
+                node->code = declaration + statementBlock->code;
+                $$ = node;
+                
         }
         | %empty {
                 //printf("else_st -> epsilon\n");
@@ -945,11 +956,11 @@ Input/Output Statements
 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
-                std::string temp = create_temp();
+                //std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = $3->code + declare_temp_code(temp);
-                node->code += ".< " + temp + "\n";
-                node->name = temp;
+                node->code = $3->code;/* + declare_temp_code(temp);*/
+                node->code += ".< " + $3->name + "\n";
+                node->name = $3->name;
                 $$ = node;
         };
 // CHECK //

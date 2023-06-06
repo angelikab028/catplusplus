@@ -1,4 +1,4 @@
-purr meow main() { O_O main program
+purr hairball main() { O_O main program
     meow m :3
     meow n :3
     meow o :3
@@ -12,5 +12,4 @@ purr meow main() { O_O main program
         scratch(m) :3
     }
 
-    scratch(o) :3
 }
