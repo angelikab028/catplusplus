@@ -15,6 +15,7 @@ extern int yylex(void);
 char *identToken;
 int numberToken;
 int count_names = 0;
+int loop = 0;
 
 bool isError = false;
 
@@ -131,7 +132,7 @@ std::string create_while() {
 std::string create_else() {
         static int num_else = 0;
         std::ostringstream ss;
-        ss << num_elses;
+        ss << num_else;
         std::string value = "else_statement" + ss.str();
         num_else += 1;
         return value;
@@ -365,6 +366,8 @@ arguments: argument argumentsprime {
 
                 // Iterate through the generated code of the argument declarations.
                 // Generate the assignments to those arguments, concatenate them to the declarations, and return.
+                // NOTE: We should have done them one by one and passed them up rather than doing this :(
+                        // We learned though :)
                 std::stringstream ss(variableDeclarations);
                 std::ostringstream intConverter;
                 std::string currLine;
@@ -425,7 +428,6 @@ argument: INTEGER IDENTIFIER {
                         std::string errorMsg = "In function \"" + funcName + "\": cannot have multiple arguments with the same name \"" + ident + "\"";
                         isError = true;
                         yyerror(errorMsg.c_str());
-                        
                 }
                 add_variable_to_symbol_table(ident, Integer);
                 std::string variableDeclaration = ". " + ident + "\n";
@@ -901,7 +903,7 @@ else_st: ELSE statement_block  { // TODO:
                 $$ = node;
         };
 
-loop_st: WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
+loop_st: WHILE {loop++;} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
