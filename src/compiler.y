@@ -886,7 +886,7 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 {
                         gotoElse = ":= " + $6->name;
                 }
-                std::string conditionalStatement = "\n";
+                std::string conditionalStatement = "?:= " + label + $3->name + "\n";
                 node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + endDeclaration + elseStatement->code + ":= " + endLabel; 
                 $$ = node;
         };
