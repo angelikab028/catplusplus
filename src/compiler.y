@@ -870,7 +870,7 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
 
 */
 
-if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st { // TODO:
+if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {
                 //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
@@ -892,7 +892,7 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 $$ = node;
         };
 
-else_st: ELSE statement_block  { // TODO:
+else_st: ELSE statement_block  {
                 //printf("else_st -> ELSE statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
@@ -920,6 +920,8 @@ loop_st: WHILE {/* add label 2 stack*/} LEFT_PARENTHESIS expression RIGHT_PARENT
                 $$ = node;
         };
 
+// pop from stack, prepend "end_", jump to that label
+// if stack empty: error, break not in loop
 break_st: BREAK SEMICOLON { // TODO:
                 //printf("break_st -> BREAK SEMICOLON\n");
                 CodeNode *node = new CodeNode;
@@ -927,6 +929,8 @@ break_st: BREAK SEMICOLON { // TODO:
                 $$ = node;
         };
 
+// pop from stack, jump to that label
+// if stack empty: error, continue not in loop
 continue_st: CONTINUE SEMICOLON { // TODO:
                 //printf("continue_st -> CONTINUE SEMICOLON\n");
                 CodeNode *node = new CodeNode;
