@@ -1,6 +1,6 @@
 O_O This is a simple loop that counts from 1 to 10
 
-purr meow main() {
+purr hairball main() {
     meow i :3
 
     i = 0 :3

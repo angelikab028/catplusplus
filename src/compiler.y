@@ -134,7 +134,7 @@ std::string create_while_body() {
         static int num_while_body = 0;
         std::ostringstream ss;
         ss << num_while_body;
-        std::string value = "while_loop_body" + ss.str();
+        std::string value = "body_while_loop" + ss.str();
         num_while_body += 1;
         return value;
 }
@@ -177,7 +177,7 @@ struct CodeNode {
 %token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS NOTEQUALS VOID
 %token <op_val> NUMBER IDENTIFIER
 %type <op_val> function_identifier function_return_type add_to_symbol_table
-%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
+%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st push
 
 %%
 prog_start: functions {
@@ -948,10 +948,7 @@ func main
 endfunc
 */
 
-loop_st: WHILE {
-        std::string label = create_while();
-        label_stack.push(label);
-} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {label_stack.pop();}{ // TODO:
+loop_st: WHILE push LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
@@ -959,13 +956,25 @@ loop_st: WHILE {
                 std::string endLabel = "end_" + label;
                 std::string declaration = declare_label(label);
                 std::string endDeclaration = declare_label(endLabel);
+                std::string bodyLabel = create_while_body(); 
+                std::string bodyDeclaration = declare_label(bodyLabel); 
                 node->name = label;
-                std::string conditionalJump = "?:= " + "\n"
-                node->code = declaration + $1->code + 
+                std::string conditionalJump = "?:= " + bodyLabel + ", " + $4->name + "\n";
+                node->code = declaration + $4->code + conditionalJump + ":= " + endLabel + "\n" + bodyDeclaration + $6->code + ":= " + label + "\n" + endDeclaration + "\n";
+                label_stack.pop();
+                $$ = node;
+        };
+        
+push: %empty {
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                std::string label = create_while();
+                label_stack.push(label);
+
                 $$ = node;
         };
 
-// pop from stack, prepend "end_", jump to that label
+// read from stack, prepend "end_", jump to that label
 // if stack empty: error, break not in loop
 break_st: BREAK SEMICOLON { // TODO:
                 //printf("break_st -> BREAK SEMICOLON\n");
@@ -974,7 +983,7 @@ break_st: BREAK SEMICOLON { // TODO:
                 $$ = node;
         };
 
-// pop from stack, jump to that label
+// read from stack, jump to that label
 // if stack empty: error, continue not in loop
 continue_st: CONTINUE SEMICOLON { // TODO:
                 //printf("continue_st -> CONTINUE SEMICOLON\n");
