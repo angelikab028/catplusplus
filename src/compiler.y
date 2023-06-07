@@ -130,6 +130,15 @@ std::string create_while() {
         return value;
 }
 
+std::string create_while_body() {
+        static int num_while_body = 0;
+        std::ostringstream ss;
+        ss << num_while_body;
+        std::string value = "while_loop_body" + ss.str();
+        num_while_body += 1;
+        return value;
+}
+
 std::string create_else() {
         static int num_else = 0;
         std::ostringstream ss;
@@ -885,7 +894,7 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 std::string gotoElse = "";
                 if (!$6->code.empty())
                 {
-                        gotoElse = ":= " + $6->name + "\n";
+                        gotoElse = ":= " + elseStatement->name + "\n";
                 }
                 else
                 {
@@ -950,6 +959,9 @@ loop_st: WHILE {
                 std::string endLabel = "end_" + label;
                 std::string declaration = declare_label(label);
                 std::string endDeclaration = declare_label(endLabel);
+                node->name = label;
+                std::string conditionalJump = "?:= " + "\n"
+                node->code = declaration + $1->code + 
                 $$ = node;
         };
 
