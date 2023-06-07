@@ -1,0 +1,14 @@
+purr hairball main() {
+    meow i :3
+    meow j :3
+    i = 0 :3
+    j = 0 :3
+    hunt (i < 2) {
+        j = 0 :3
+        hunt (j < 3) {
+            scratch(j) :3
+            j = j + 1 :3
+        }
+        i = i + 1 :3
+    }
+}
