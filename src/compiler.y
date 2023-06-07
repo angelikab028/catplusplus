@@ -176,7 +176,7 @@ struct CodeNode {
 %start prog_start
 %token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS NOTEQUALS VOID
 %token <op_val> NUMBER IDENTIFIER
-%type <op_val> function_identifier function_return_type add_to_symbol_table
+%type <op_val> function_identifier function_return_type add_to_symbol_table get_label
 %type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st push
 
 %%
@@ -948,29 +948,39 @@ func main
 endfunc
 */
 
-loop_st: WHILE push LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
+loop_st: WHILE push get_label LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
-                std::string label = label_stack.top();
+                char* returnValue = $3;
+                std::string label = std::string(returnValue);
                 std::string endLabel = "end_" + label;
+                std::string bodyLabel = "body_" + label;
                 std::string declaration = declare_label(label);
                 std::string endDeclaration = declare_label(endLabel);
-                std::string bodyLabel = create_while_body(); 
+                //std::string bodyLabel = create_while_body(); 
                 std::string bodyDeclaration = declare_label(bodyLabel); 
                 node->name = label;
-                std::string conditionalJump = "?:= " + bodyLabel + ", " + $4->name + "\n";
-                node->code = declaration + $4->code + conditionalJump + ":= " + endLabel + "\n" + bodyDeclaration + $6->code + ":= " + label + "\n" + endDeclaration + "\n";
+                std::string conditionalJump = "?:= " + bodyLabel + ", " + $5->name + "\n";
+                node->code = declaration + $5->code + conditionalJump + ":= " + endLabel + "\n" + bodyDeclaration + $7->code + ":= " + label + "\n" + endDeclaration;
                 label_stack.pop();
                 $$ = node;
         };
-        
+
+get_label: %empty {
+                std::string label = label_stack.top();
+                int strLen = label.size();
+                char *c = new char[strLen + 1];
+                std::copy(label.begin(), label.end(), c);
+                c[strLen] = '\0';
+                $$ = c;
+        }; 
+
 push: %empty {
                 CodeNode *node = new CodeNode;
                 node->code = "";
                 std::string label = create_while();
                 label_stack.push(label);
-
                 $$ = node;
         };
 
