@@ -887,6 +887,10 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 {
                         gotoElse = ":= " + $6->name + "\n";
                 }
+                else
+                {
+                        gotoElse = ":= " + label + "\n";
+                }
                 std::string conditionalStatement = "?:= " + label + ", " + $3->name + "\n";
                 node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + ":= " + endLabel + "\n" + elseStatement->code + endDeclaration; 
                 $$ = node;
@@ -913,10 +917,39 @@ else_st: ELSE statement_block  {
                 $$ = node;
         };
 
-loop_st: WHILE {/* add label 2 stack*/} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {/*pop that joint */}{ // TODO:
+/*
+func main
+. i
+= i, 0
+
+: beginloop0
+. _temp0
+< _temp0, i, 10
+?:= loopbody0, _temp0
+:= endloop0
+
+: loopbody0
+. _temp1
++ _temp1, i, 1
+= i, _temp1
+.> i
+:= beginloop0
+
+: endloop0
+endfunc
+*/
+
+loop_st: WHILE {
+        std::string label = create_while();
+        label_stack.push(label);
+} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {label_stack.pop();}{ // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                std::string label = label_stack.top();
+                std::string endLabel = "end_" + label;
+                std::string declaration = declare_label(label);
+                std::string endDeclaration = declare_label(endLabel);
                 $$ = node;
         };
 
@@ -938,14 +971,12 @@ continue_st: CONTINUE SEMICOLON { // TODO:
                 $$ = node;
         };
 
-// CHECK // 
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = $2->code + std::string("ret ") + $2->name + std::string("\n");
                 $$ = node;
         };
-// CHECK /// 
 return_exp: add_exp {
                 $$ = $1;
         };
