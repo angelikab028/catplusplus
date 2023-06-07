@@ -1010,6 +1010,17 @@ continue_st: CONTINUE SEMICOLON { // TODO:
                 //printf("continue_st -> CONTINUE SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                if (label_stack.empty()) 
+                {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "In function " + funcName + ", use of break outside of loop.";
+                        yyerror(error_message.c_str());
+                        isError = true;
+                }
+                else 
+                {
+                        node->code = ":= " + label_stack.top() + "\n"; 
+                }
                 $$ = node;
         };
 
