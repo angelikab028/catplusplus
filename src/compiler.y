@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sstream> // using sstream instead of to_string because stdlib on bolt doesn't have to_string in the stl (why?)
+#include <stack>
 extern FILE* yyin;
 extern int line_number;
 extern int column_number;
@@ -32,6 +33,7 @@ struct Function {
 };
 
 std::vector <Function> symbol_table;
+std::stack <std::string> label_stack;
 
 // remember that Bison is a bottom up parser: that it parses leaf nodes first before
 // parsing the parent nodes. So control flow begins at the leaf grammar nodes
@@ -128,6 +130,15 @@ std::string create_while() {
         return value;
 }
 
+std::string create_while_body() {
+        static int num_while_body = 0;
+        std::ostringstream ss;
+        ss << num_while_body;
+        std::string value = "body_while_loop" + ss.str();
+        num_while_body += 1;
+        return value;
+}
+
 std::string create_else() {
         static int num_else = 0;
         std::ostringstream ss;
@@ -165,8 +176,8 @@ struct CodeNode {
 %start prog_start
 %token FUNCTION INTEGER SEMICOLON BREAK CONTINUE IF PRINT READ RETURN WHILE ASSIGN SUB ADD MULT DIV MOD ELSE COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET LEFT_CURLY RIGHT_CURLY EQUALS LESSTHAN GREATERTHAN LESSOREQUALS GREATOREQUALS NOTEQUALS VOID
 %token <op_val> NUMBER IDENTIFIER
-%type <op_val> function_identifier function_return_type add_to_symbol_table
-%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st
+%type <op_val> function_identifier function_return_type add_to_symbol_table get_label
+%type <node> prog_start functions function statements statement statementsprime arguments argument argumentsprime parameter parameters parametersprime expression cond_exp add_exp mult_exp unary_exp primary_exp array_element function_call exp_st int_dec_st array_dec_st assignment_dec assign_int_st assign_array_st statement_block if_st else_st loop_st break_st continue_st return_exp return_st read_st print_st push
 
 %%
 prog_start: functions {
@@ -868,7 +879,7 @@ statement_block: LEFT_CURLY statements RIGHT_CURLY {
 
 */
 
-if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st { // TODO:
+if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st {
                 //printf("if_st -> IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
@@ -883,17 +894,30 @@ if_st: IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block else_st 
                 std::string gotoElse = "";
                 if (!$6->code.empty())
                 {
-                        gotoElse = ":= " + $6->name;
+                        gotoElse = ":= " + elseStatement->name + "\n";
                 }
-                std::string conditionalStatement = "?:= " + label + $3->name + "\n";
-                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + endDeclaration + elseStatement->code + ":= " + endLabel; 
+                else
+                {
+                        gotoElse = ":= " + endLabel + "\n";
+                }
+                std::string conditionalStatement = "?:= " + label + ", " + $3->name + "\n";
+                node->code += exp->code + conditionalStatement + gotoElse + declaration + statementBlock->code + ":= " + endLabel + "\n" + elseStatement->code + endDeclaration; 
                 $$ = node;
         };
 
-else_st: ELSE statement_block  { // TODO:
+else_st: ELSE statement_block  {
                 //printf("else_st -> ELSE statement_block\n");
                 CodeNode *node = new CodeNode;
+                node->code = "";
                 std::string label = create_else();
+                node->name = label;
+                std::string declaration = declare_label(label);
+                std::string endLabel = "end_" + label;
+                std::string endDeclaration = declare_label(endLabel);
+                CodeNode *statementBlock = $2;
+                node->code = declaration + statementBlock->code;
+                $$ = node;
+                
         }
         | %empty {
                 //printf("else_st -> epsilon\n");
@@ -902,35 +926,110 @@ else_st: ELSE statement_block  { // TODO:
                 $$ = node;
         };
 
-loop_st: WHILE {/* add label 2 stack*/} LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block {/*pop that joint */}{ // TODO:
+/*
+func main
+. i
+= i, 0
+
+: beginloop0
+. _temp0
+< _temp0, i, 10
+?:= loopbody0, _temp0
+:= endloop0
+
+: loopbody0
+. _temp1
++ _temp1, i, 1
+= i, _temp1
+.> i
+:= beginloop0
+
+: endloop0
+endfunc
+*/
+
+loop_st: WHILE push get_label LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block { // TODO:
                 //printf("loop_st -> WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS statement_block\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                char* returnValue = $3;
+                std::string label = std::string(returnValue);
+                std::string endLabel = "end_" + label;
+                std::string bodyLabel = "body_" + label;
+                std::string declaration = declare_label(label);
+                std::string endDeclaration = declare_label(endLabel);
+                //std::string bodyLabel = create_while_body(); 
+                std::string bodyDeclaration = declare_label(bodyLabel); 
+                node->name = label;
+                std::string conditionalJump = "?:= " + bodyLabel + ", " + $5->name + "\n";
+                node->code = declaration + $5->code + conditionalJump + ":= " + endLabel + "\n" + bodyDeclaration + $7->code + ":= " + label + "\n" + endDeclaration;
+                label_stack.pop();
                 $$ = node;
         };
 
+get_label: %empty {
+                std::string label = label_stack.top();
+                int strLen = label.size();
+                char *c = new char[strLen + 1];
+                std::copy(label.begin(), label.end(), c);
+                c[strLen] = '\0';
+                $$ = c;
+        }; 
+
+push: %empty {
+                CodeNode *node = new CodeNode;
+                node->code = "";
+                std::string label = create_while();
+                label_stack.push(label);
+                $$ = node;
+        };
+
+// read from stack, prepend "end_", jump to that label
+// if stack empty: error, break not in loop
 break_st: BREAK SEMICOLON { // TODO:
                 //printf("break_st -> BREAK SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                if (label_stack.empty()) 
+                {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "In function " + funcName + ", use of break outside of loop.";
+                        yyerror(error_message.c_str());
+                        isError = true;
+                }
+                else 
+                {
+                        node->code = ":= end_" + label_stack.top() + "\n"; 
+                }
                 $$ = node;
         };
 
+// read from stack, jump to that label
+// if stack empty: error, continue not in loop
 continue_st: CONTINUE SEMICOLON { // TODO:
                 //printf("continue_st -> CONTINUE SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = "";
+                if (label_stack.empty()) 
+                {
+                        std::string funcName = get_function()->name;
+                        std::string error_message = "In function " + funcName + ", use of break outside of loop.";
+                        yyerror(error_message.c_str());
+                        isError = true;
+                }
+                else 
+                {
+                        node->code = ":= " + label_stack.top() + "\n"; 
+                }
                 $$ = node;
         };
 
-// CHECK // 
 return_st: RETURN return_exp SEMICOLON {
                 //printf("return_st -> RETURN return_exp SEMICOLON\n");
                 CodeNode *node = new CodeNode;
                 node->code = $2->code + std::string("ret ") + $2->name + std::string("\n");
                 $$ = node;
         };
-// CHECK /// 
 return_exp: add_exp {
                 $$ = $1;
         };
@@ -945,11 +1044,11 @@ Input/Output Statements
 
 read_st: READ LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {
                 //printf("read_st -> LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n");
-                std::string temp = create_temp();
+                //std::string temp = create_temp();
                 CodeNode *node = new CodeNode;
-                node->code = $3->code + declare_temp_code(temp);
-                node->code += ".< " + temp + "\n";
-                node->name = temp;
+                node->code = $3->code;/* + declare_temp_code(temp);*/
+                node->code += ".< " + $3->name + "\n";
+                node->name = $3->name;
                 $$ = node;
         };
 // CHECK //
